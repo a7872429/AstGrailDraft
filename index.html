@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asteriated Grail｜陣容構築挑戰</title>
+<style>
+:root{--bg:#091022;--panel:#121c38;--line:#33456d;--gold:#e7bd63;--gold2:#ffe3a6;--text:#f7f8ff;--muted:#9da9ca;--green:#91e4bd}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;background:radial-gradient(circle at 50% -15%,#293e73 0,transparent 38%),linear-gradient(180deg,#091022,#070c18)}
+button{font:inherit} .app{max-width:1150px;margin:auto;padding:28px 18px 60px} header{text-align:center;margin-bottom:22px}
+.eyebrow{color:var(--gold);font-size:13px;letter-spacing:.2em;font-weight:900} h1{font-size:clamp(28px,5vw,46px);margin:7px 0} header p{color:var(--muted);margin:0}
+.panel{background:linear-gradient(180deg,rgba(20,31,61,.97),rgba(10,16,33,.98));border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:20px;box-shadow:0 20px 70px rgba(0,0,0,.35)}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap} .round{font-size:22px;font-weight:950} .round span{color:var(--gold2)} .small{color:var(--muted);font-size:13px}
+.offer-title{text-align:center;margin:25px 0 15px;color:var(--gold2);font-weight:900} .offers{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{border:1px solid #35466f;background:linear-gradient(180deg,#1b294d,#111a33);border-radius:18px;padding:12px 9px;color:white;cursor:pointer;transition:.16s;position:relative}
+.card:hover{transform:translateY(-4px);border-color:var(--gold)} .card.selected{border-color:var(--gold);box-shadow:0 0 0 3px rgba(231,189,99,.12)}
+.avatar{width:100px;height:100px;border-radius:50%;overflow:hidden;margin:auto;border:3px solid #52638e;background:#25365e} .avatar img,.mini img,.final-card img{width:100%;height:100%;object-fit:cover}
+.name{font-weight:950;text-align:center;margin-top:8px} .stat{font-size:11px;color:#aeb9d8;text-align:center;margin-top:5px} .pickmark{position:absolute;right:8px;top:8px;display:none;background:var(--gold);color:#241b08;border-radius:50%;width:25px;height:25px;place-items:center;font-weight:1000} .selected .pickmark{display:grid}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#42537e,transparent);margin:26px 0} .seat-title{font-weight:900;margin-bottom:12px}
+.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px} .seat{min-height:158px;border:1px dashed #46577d;border-radius:17px;padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(5,9,20,.22)} .seat.available{border-color:var(--gold);cursor:pointer;background:rgba(231,189,99,.06)} .seat.available:hover{background:rgba(231,189,99,.12)} .seat.filled{border-style:solid}
+.mini{width:74px;height:74px;border-radius:50%;overflow:hidden;margin:auto;border:2px solid #6576a3} .num{color:var(--gold);font-size:12px;font-weight:950} .sname{font-size:17px;font-weight:950;margin-top:6px} .instruction{text-align:center;min-height:28px;color:var(--gold2);font-weight:800;margin-top:17px}
+.actions{display:flex;justify-content:center;gap:12px;margin-top:18px} .btn{border:0;border-radius:13px;padding:12px 22px;font-weight:950;cursor:pointer} .primary{background:linear-gradient(180deg,#ffe0a0,#dcae50);color:#231a08} .secondary{background:#263556;color:#f3f6ff;border:1px solid #50618d} .hidden{display:none!important}
+.final-team{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px auto;max-width:680px} .final-card{border:1px solid #394b74;border-radius:15px;padding:11px;background:#151f3c;text-align:center} .final-card img{width:70px;height:70px;border-radius:50%;border:2px solid #697ba7}
+.score-ring{width:190px;height:190px;border-radius:50%;margin:20px auto 14px;display:grid;place-items:center;position:relative;background:conic-gradient(var(--gold) var(--pct),#24304d 0)} .score-ring:after{content:"";position:absolute;inset:12px;border-radius:50%;background:#101936} .score-number{position:relative;z-index:2;font-size:50px;font-weight:1000;color:var(--gold2)} .score-number small{font-size:19px;color:var(--muted)} .grade{font-size:28px;font-weight:1000;text-align:center} .feedback{max-width:720px;margin:10px auto;color:#c4cdec;line-height:1.7;text-align:center}
+.breakdown{max-width:690px;margin:22px auto} .row{display:grid;grid-template-columns:125px 1fr 48px;gap:10px;align-items:center;margin:11px 0} .bar{height:9px;background:#25314d;border-radius:99px;overflow:hidden} .fill{height:100%;background:linear-gradient(90deg,#9ca9ca,#e7bd63)} .formula{max-width:760px;margin:18px auto 0;padding:13px;border-radius:12px;background:#0c142c;color:#8f9dbc;font-size:12px;line-height:1.6;text-align:center}
+@media(max-width:760px){.offers{grid-template-columns:repeat(2,1fr)}.offers .card:last-child{grid-column:1/-1;max-width:50%;width:100%;justify-self:center}.seats,.final-team{grid-template-columns:1fr}}
+
+.team-choice{display:flex;justify-content:center;gap:14px;margin:20px 0 6px;flex-wrap:wrap}
+.team-btn{min-width:150px;padding:13px 24px;border-radius:14px;border:2px solid transparent;font-weight:950;cursor:pointer;color:#fff;transition:.16s}
+.team-btn.red{background:linear-gradient(180deg,#7b2331,#43131d);border-color:#a94555}
+.team-btn.blue{background:linear-gradient(180deg,#244d85,#122b50);border-color:#4d75ad}
+.team-btn.active{box-shadow:0 0 0 3px rgba(255,255,255,.12),0 8px 22px rgba(0,0,0,.28);transform:translateY(-2px)}
+.team-btn.red.active{border-color:#ff8b9e}.team-btn.blue.active{border-color:#79b6ff}
+.team-note{text-align:center;color:#97a5c7;font-size:12px;margin-top:7px}
+.table-wrap{margin-top:22px}.table-label{text-align:center;font-weight:900;color:var(--gold2);margin-bottom:12px}
+.seat-map{position:relative;width:min(760px,92vw);aspect-ratio:1.18/1;margin:0 auto 26px}
+.seat-orbit{position:absolute;inset:8% 8% 7%;border:10px solid rgba(231,189,99,.18);border-radius:50%}
+.turn-arrow{position:absolute;left:45%;bottom:2.5%;font-size:38px;color:rgba(231,189,99,.72);transform:rotate(-8deg)}
+.map-seat{position:absolute;width:118px;min-height:118px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;text-align:center;border:3px solid;box-shadow:0 10px 24px rgba(0,0,0,.28);padding:8px;z-index:2}
+.map-seat.red{background:linear-gradient(180deg,#762536,#40141e);border-color:#cf6677}
+.map-seat.blue{background:linear-gradient(180deg,#26558f,#132e56);border-color:#6697d2}
+.map-seat.mine{box-shadow:0 0 0 5px rgba(231,189,99,.25),0 10px 24px rgba(0,0,0,.3);border-color:var(--gold)}
+.map-seat.available{cursor:pointer;animation:pulseSeat 1.5s ease-in-out infinite}.map-seat.available:hover{filter:brightness(1.15)}
+.map-seat .seat-avatar{width:54px;height:54px;border-radius:50%;overflow:hidden;margin:0 auto 3px;border:2px solid rgba(255,255,255,.6)}
+.map-seat .seat-avatar img{width:100%;height:100%;object-fit:cover}
+.map-seat .seat-code{font-size:13px;font-weight:1000}.map-seat .seat-char{font-size:12px;font-weight:850;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:94px}
+.first-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:3px 9px;border-radius:999px;background:#f1c86a;color:#281b05;font-size:9px;font-weight:1000;letter-spacing:.05em;border:2px solid #ffe7a6}
+.map-seat.opp{opacity:.50;filter:saturate(.55)}.map-seat.opp .seat-char{color:#bbc4dd}
+.pos-r1{left:73%;top:82%}.pos-b1{left:91%;top:50%}.pos-b2{left:73%;top:17%}.pos-r2{left:27%;top:17%}.pos-b3{left:9%;top:50%}.pos-r3{left:27%;top:82%}
+.map-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:36%;height:26%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #46577d;background:rgba(10,17,35,.84);text-align:center;padding:12px}
+.map-center b{color:var(--gold2);font-size:18px}.map-center span{color:#8897bb;font-size:11px;margin-top:5px}
+@keyframes pulseSeat{0%,100%{box-shadow:0 0 0 3px rgba(231,189,99,.18)}50%{box-shadow:0 0 0 8px rgba(231,189,99,.05)}}
+@media(max-width:650px){.seat-map{width:96vw;margin-left:50%;transform:translateX(-50%);aspect-ratio:1/1}.map-seat{width:86px;min-height:86px;padding:5px}.map-seat .seat-avatar{width:40px;height:40px}.map-seat .seat-code{font-size:11px}.map-seat .seat-char{font-size:10px;max-width:70px}.first-tag{font-size:7px;padding:2px 5px}.seat-orbit{border-width:6px}.map-center{width:34%;height:24%}.map-center b{font-size:13px}.map-center span{font-size:9px}}
+
+
+.profile-panel{max-width:980px;margin:0 auto 18px;padding:22px;border:1px solid #34466e;border-radius:18px;background:rgba(12,22,46,.94)}
+.profile-panel h2{text-align:center;margin:0 0 6px;color:#f5d98c}
+.profile-panel .sub{text-align:center;color:#9da9ca;font-size:13px;margin-bottom:18px}
+.profile-name{display:flex;gap:10px;max-width:520px;margin:0 auto 18px}
+.profile-name input{flex:1;background:#101a34;border:1px solid #40537e;border-radius:10px;color:#fff;padding:11px 13px;font-size:16px}
+.favorite-title{text-align:center;font-weight:900;margin-bottom:10px}
+.favorite-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:9px;max-height:390px;overflow:auto;padding:4px}
+.favorite-card{border:1px solid #33466f;background:#15213f;border-radius:12px;color:#fff;padding:8px 5px;cursor:pointer;text-align:center}
+.favorite-card img{width:58px;height:58px;border-radius:50%;object-fit:cover;background:#26385f}
+.favorite-card span{display:block;font-size:12px;margin-top:5px;font-weight:800}
+.favorite-card.selected{border-color:#e7bd63;box-shadow:0 0 0 2px rgba(231,189,99,.18);background:#243052}
+.profile-actions{text-align:center;margin-top:16px}
+.player-score-title{text-align:center;font-size:17px;font-weight:900;color:#e7edf9;margin:14px auto 2px;line-height:1.55}
+.history-wall{display:block;margin-top:8px;color:#d6b76c;font-weight:850}
+.feedback.tier-gold,.feedback.tier-silver,.feedback.tier-bronze{display:block;width:fit-content;max-width:min(820px,90%);margin:8px auto 14px;padding:8px 18px 9px;border-radius:10px;line-height:1.45;text-align:center}
+.feedback.tier-gold{color:#FFD76A;border:1.5px solid rgba(255,215,106,.82);background:rgba(255,215,106,.075);box-shadow:0 0 12px rgba(255,215,106,.13)}
+.feedback.tier-silver{color:#F1F5FC;border:1.5px solid rgba(207,221,241,.78);background:rgba(207,221,241,.075);box-shadow:0 0 12px rgba(207,221,241,.12)}
+.feedback.tier-bronze{color:#D99355;border:1.5px solid rgba(217,147,85,.82);background:rgba(217,147,85,.075);box-shadow:0 0 12px rgba(217,147,85,.12)}
+
+
+.restart-actions{margin-bottom:0!important}
+.restart-help{
+  position:relative;
+  display:block;
+  clear:both;
+  width:100%;
+  box-sizing:border-box;
+  text-align:center;
+  color:#8f9bbb;
+  font-size:11px;
+  line-height:1.65;
+  margin:10px auto 18px;
+  padding:0 16px;
+}
+
+
+.bond-dialogue{
+  min-height:18px;
+  margin:2px auto 12px;
+  padding:0 18px;
+  text-align:center;
+  font-size:12px;
+  line-height:1.55;
+  color:#8795b8;
+  font-weight:500;
+  max-width:820px;
+}
+.bond-dialogue:empty{display:none}
+
+
+.rule-test-note{font-size:10px;color:#65708d;text-align:center;margin:4px auto 10px;letter-spacing:.03em}
+.rule-test-note:empty{display:none}
+
+.final-card.team-red{
+  background:linear-gradient(180deg,rgba(91,22,35,.96),rgba(50,17,28,.96));
+  border:1.5px solid #b64b5b;
+  box-shadow:0 0 0 1px rgba(182,75,91,.12), inset 0 0 24px rgba(145,37,52,.15);
+}
+.final-card.team-blue{
+  background:linear-gradient(180deg,rgba(18,48,88,.96),rgba(13,31,61,.96));
+  border:1.5px solid #3e73b6;
+  box-shadow:0 0 0 1px rgba(62,115,182,.12), inset 0 0 24px rgba(45,98,165,.14);
+}
+.final-card.team-red img{border-color:#d46a75}
+.final-card.team-blue img{border-color:#5b8fce}
+.final-card .team-seat-label{
+  color:#f0c75b;
+  font-size:18px;
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.05em;
+  margin-bottom:8px;
+}
+
+</style></head>
+<body><div class="app">
+<header><div class="eyebrow">ASTERIATED GRAIL Powered by Xepher & JOJOW · v1.6e Local Review</div><h1>星杯傳說｜陣容構築挑戰</h1><p>在星杯大賽中贏得勝利吧！</p></header>
+
+<section id="profilePanel" class="profile-panel">
+  <h2>挑戰者登錄</h2>
+  <div class="sub">輸入姓名，並選擇你的本命角色後開始挑戰。</div>
+  <div class="profile-name"><input id="playerNameInput" maxlength="20" placeholder="請輸入姓名"></div>
+  <div class="favorite-title">選擇本命</div>
+  <div id="favoriteGrid" class="favorite-grid"></div>
+  <div class="profile-actions"><button id="profileStartBtn" class="btn primary">確認，開始挑戰</button></div>
+  <div id="profileError" style="text-align:center;color:#ff9daf;font-size:12px;margin-top:9px"></div>
+</section>
+<section id="gamePanel" class="panel hidden">
+<div id="teamSetup">
+  <div class="round" style="text-align:center">本次選擇為</div>
+  <div id="randomTeamResult" style="text-align:center;font-size:34px;font-weight:1000;margin:18px 0 8px;color:var(--gold2)">抽選中…</div>
+  <div class="team-note">系統將隨機決定紅方或藍方。</div>
+</div>
+<div id="draftArea" class="hidden">
+<div class="topbar"></div>
+<div class="offer-title">請選擇本輪角色</div><div id="offers" class="offers"></div>
+<div class="divider"></div>
+<div class="table-wrap">
+  <div class="table-label">座次配置</div>
+  <div id="seatMap" class="seat-map">
+    <div class="seat-orbit"></div>
+    <div class="turn-arrow">➜</div>
+    <div class="map-center"><b id="teamCenterText">紅隊構築中</b><span>紅1為 First Player，依座位順序行動</span></div>
+  </div>
+</div>
+<div id="instruction" class="instruction">先選一位角色。</div>
+<div class="actions"><button id="restartBtn" class="btn secondary">重新開始</button></div>
+</div>
+</section>
+<section id="resultPanel" class="panel hidden">
+<div class="round" style="text-align:center">陣容評分完成</div><div id="playerScoreTitle" class="player-score-title"></div><div id="finalTeam" class="final-team"></div>
+<div id="scoreRing" class="score-ring" style="--pct:0%"><div class="score-number"><span id="scoreNum">0</span><small>/100</small></div></div>
+<div id="grade" class="grade"></div><div id="feedback" class="feedback"></div><div id="bondDialogue" class="bond-dialogue"></div><div id="ruleTestNote" class="rule-test-note"></div><div id="breakdown" class="breakdown"></div>
+<div class="actions restart-actions">
+<button id="againBtn" class="btn primary">重新構築</button>
+<button id="newProfileBtn" class="btn secondary">重新開始</button>
+</div>
+<div class="restart-help">重新構築會保留目前姓名、本命與本局姓名亂數；重新開始可重新輸入姓名及選擇本命。</div>
+<div class="share-actions"><button id="downloadShareBtn" class="btn primary">儲存圖片</button></div>
+</section></div>
+<!-- Asteriated Grail v1.6e Local Review: all rules are intentionally visible for offline review only. -->
+<script>
+const characters=[{"id":1,"name":"風之劍聖","image":"assets/avatars/01.png","base":55.99,"tour":62.78,"pick":16,"ban":4},{"id":2,"name":"狂戰士","image":"assets/avatars/02.png","base":66.69,"tour":56.44,"pick":7,"ban":15},{"id":3,"name":"神箭手","image":"assets/avatars/03.png","base":64.97,"tour":57.78,"pick":12,"ban":8},{"id":4,"name":"封印師","image":"assets/avatars/04.png","base":57.39,"tour":61.17,"pick":12,"ban":1},{"id":5,"name":"暗殺者","image":"assets/avatars/05.png","base":54.54,"tour":55.62,"pick":7,"ban":2},{"id":6,"name":"聖女","image":"assets/avatars/06.png","base":63.79,"tour":56.22,"pick":8,"ban":8},{"id":7,"name":"天使","image":"assets/avatars/07.png","base":69.71,"tour":51.23,"pick":15,"ban":5},{"id":8,"name":"魔法少女","image":"assets/avatars/08.png","base":62.69,"tour":48.5,"pick":3,"ban":1},{"id":9,"name":"魔劍士","image":"assets/avatars/09.png","base":73.2,"tour":53.5,"pick":6,"ban":3},{"id":10,"name":"聖槍騎士","image":"assets/avatars/10.png","base":64.36,"tour":59.79,"pick":19,"ban":9},{"id":11,"name":"元素師","image":"assets/avatars/11.png","base":71.86,"tour":60.5,"pick":16,"ban":11},{"id":12,"name":"冒險家","image":"assets/avatars/12.png","base":66.8,"tour":70.31,"pick":17,"ban":26},{"id":13,"name":"瘟疫法師","image":"assets/avatars/13.png","base":61.23,"tour":60.44,"pick":10,"ban":8},{"id":14,"name":"仲裁者","image":"assets/avatars/14.png","base":54.36,"tour":53.89,"pick":8,"ban":2},{"id":15,"name":"神官","image":"assets/avatars/15.png","base":52.43,"tour":57.06,"pick":11,"ban":3},{"id":16,"name":"祈禱師","image":"assets/avatars/16.png","base":59.58,"tour":50.2,"pick":11,"ban":2},{"id":17,"name":"賢者","image":"assets/avatars/17.png","base":76.25,"tour":80.22,"pick":12,"ban":47},{"id":18,"name":"靈符師","image":"assets/avatars/18.png","base":55.76,"tour":57.04,"pick":8,"ban":0},{"id":19,"name":"劍帝","image":"assets/avatars/19.png","base":70.07,"tour":49.31,"pick":6,"ban":4},{"id":20,"name":"格鬥家","image":"assets/avatars/20.png","base":60.69,"tour":64.22,"pick":12,"ban":1},{"id":21,"name":"勇者","image":"assets/avatars/21.png","base":52.76,"tour":51.77,"pick":7,"ban":3},{"id":22,"name":"靈魂術士","image":"assets/avatars/22.png","base":62.85,"tour":61.13,"pick":15,"ban":17},{"id":23,"name":"血之巫女","image":"assets/avatars/23.png","base":59.19,"tour":64.0,"pick":10,"ban":26},{"id":24,"name":"蝶舞者","image":"assets/avatars/24.png","base":45.0,"tour":49.39,"pick":9,"ban":13},{"id":25,"name":"女武神","image":"assets/avatars/25.png","base":62.56,"tour":49.56,"pick":9,"ban":4},{"id":26,"name":"魔弓","image":"assets/avatars/26.png","base":58.29,"tour":49.33,"pick":12,"ban":2},{"id":27,"name":"紅蓮騎士","image":"assets/avatars/27.png","base":78.66,"tour":62.2,"pick":21,"ban":13},{"id":28,"name":"英靈人形","image":"assets/avatars/28.png","base":55.72,"tour":57.25,"pick":15,"ban":7},{"id":29,"name":"魔槍","image":"assets/avatars/29.png","base":70.12,"tour":65.22,"pick":19,"ban":6},{"id":30,"name":"蒼炎魔女","image":"assets/avatars/30.png","base":65.34,"tour":58.34,"pick":7,"ban":9},{"id":31,"name":"吟游詩人","image":"assets/avatars/31.png","base":72.88,"tour":59.39,"pick":4,"ban":6},{"id":32,"name":"精靈射手","image":"assets/avatars/32.png","base":65.34,"tour":50.84,"pick":10,"ban":1},{"id":33,"name":"陰陽師","image":"assets/avatars/33.png","base":73.26,"tour":41.06,"pick":9,"ban":1},{"id":34,"name":"血色劍靈","image":"assets/avatars/34.png","base":65.42,"tour":57.36,"pick":14,"ban":12},{"id":35,"name":"月之女神","image":"assets/avatars/35.png","base":79.36,"tour":50.54,"pick":13,"ban":7},{"id":36,"name":"獸靈武士","image":"assets/avatars/36.png","base":70.0,"tour":54.67,"pick":10,"ban":2},{"id":37,"name":"聖弓","image":"assets/avatars/37.png","base":60.24,"tour":61.5,"pick":3,"ban":3},{"id":38,"name":"紅衣主教","image":"assets/avatars/38.png","base":88.58,"tour":50.0,"pick":0,"ban":0},{"id":39,"name":"記錄者","image":"assets/avatars/39.png","base":62.07,"tour":46.06,"pick":4,"ban":0},{"id":41,"name":"聖庭檢察士","image":"assets/avatars/41.png","base":72.12,"tour":61.31,"pick":17,"ban":9},{"id":42,"name":"星墜女巫","image":"assets/avatars/42.png","base":68.57,"tour":64.5,"pick":16,"ban":2},{"id":43,"name":"戰鬥法師","image":"assets/avatars/43.png","base":58.21,"tour":50.0,"pick":0,"ban":0},{"id":44,"name":"獵巫人","image":"assets/avatars/44.png","base":66.5,"tour":57.69,"pick":6,"ban":2},{"id":45,"name":"聖殿騎士","image":"assets/avatars/45.png","base":95.0,"tour":51.56,"pick":4,"ban":0},{"id":46,"name":"矜貴之女","image":"assets/avatars/46.png","base":56.3,"tour":43.56,"pick":6,"ban":1},{"id":48,"name":"噬神者","image":"assets/avatars/48.png","base":63.55,"tour":51.56,"pick":2,"ban":2},{"id":49,"name":"神秘學者","image":"assets/avatars/49.png","base":81.01,"tour":65.64,"pick":17,"ban":14},{"id":50,"name":"女僕長","image":"assets/avatars/50.png","base":89.77,"tour":58.94,"pick":14,"ban":9},{"id":52,"name":"結界師","image":"assets/avatars/52.png","base":77.79,"tour":55.22,"pick":5,"ban":2},{"id":53,"name":"染污者","image":"assets/avatars/53.png","base":54.78,"tour":57.31,"pick":6,"ban":1},{"id":55,"name":"傳教士","image":"assets/avatars/55.png","base":79.99,"tour":68.03,"pick":6,"ban":5},{"id":66,"name":"異教徒","image":"assets/avatars/66.png","base":75.27,"tour":49.69,"pick":11,"ban":9}];
+const tournamentPairs={"仲裁者|天使": {"g": 1, "w": 0}, "仲裁者|祈禱師": {"g": 1, "w": 0}, "天使|祈禱師": {"g": 5, "w": 0}, "傳教士|聖槍騎士": {"g": 1, "w": 1}, "傳教士|聖殿騎士": {"g": 2, "w": 2}, "聖槍騎士|聖殿騎士": {"g": 1, "w": 1}, "元素師|神秘學者": {"g": 3, "w": 3}, "元素師|風之劍聖": {"g": 1, "w": 1}, "神秘學者|風之劍聖": {"g": 3, "w": 2}, "冒險家|暗殺者": {"g": 3, "w": 2}, "冒險家|聖槍騎士": {"g": 5, "w": 2}, "暗殺者|聖槍騎士": {"g": 2, "w": 1}, "賢者|陰陽師": {"g": 1, "w": 0}, "賢者|靈魂術士": {"g": 2, "w": 1}, "陰陽師|靈魂術士": {"g": 1, "w": 0}, "冒險家|女僕長": {"g": 2, "w": 2}, "冒險家|魔槍": {"g": 1, "w": 1}, "女僕長|魔槍": {"g": 5, "w": 2}, "神秘學者|賢者": {"g": 1, "w": 1}, "賢者|風之劍聖": {"g": 4, "w": 3}, "女僕長|紅蓮騎士": {"g": 1, "w": 0}, "女僕長|聖槍騎士": {"g": 2, "w": 1}, "紅蓮騎士|聖槍騎士": {"g": 4, "w": 3}, "星墜女巫|精靈射手": {"g": 1, "w": 0}, "星墜女巫|魔弓": {"g": 4, "w": 3}, "精靈射手|魔弓": {"g": 2, "w": 0}, "天使|女武神": {"g": 3, "w": 1}, "天使|聖槍騎士": {"g": 2, "w": 1}, "女武神|聖槍騎士": {"g": 2, "w": 1}, "冒險家|星墜女巫": {"g": 2, "w": 1}, "冒險家|紅衣/鑄律": {"g": 1, "w": 0}, "星墜女巫|紅衣/鑄律": {"g": 1, "w": 0}, "紅蓮騎士|聖庭檢察士": {"g": 5, "w": 2}, "聖庭檢察士|聖槍騎士": {"g": 2, "w": 1}, "神箭手|紅衣/鑄律": {"g": 2, "w": 2}, "神箭手|血之巫女": {"g": 1, "w": 1}, "紅衣/鑄律|血之巫女": {"g": 2, "w": 1}, "矜貴之女|聖槍騎士": {"g": 1, "w": 0}, "矜貴之女|蝶舞者": {"g": 1, "w": 0}, "聖槍騎士|蝶舞者": {"g": 1, "w": 0}, "星墜女巫|異教徒": {"g": 2, "w": 1}, "星墜女巫|瘟疫法師": {"g": 2, "w": 1}, "異教徒|瘟疫法師": {"g": 2, "w": 0}, "封印師|英靈人形": {"g": 4, "w": 3}, "封印師|魔槍": {"g": 3, "w": 3}, "英靈人形|魔槍": {"g": 4, "w": 2}, "星墜女巫|血之巫女": {"g": 1, "w": 1}, "血之巫女|魔弓": {"g": 1, "w": 1}, "仲裁者|冒險家": {"g": 1, "w": 0}, "仲裁者|魔法少女": {"g": 1, "w": 0}, "冒險家|魔法少女": {"g": 1, "w": 0}, "噬神者|精靈射手": {"g": 1, "w": 0}, "噬神者|英靈人形": {"g": 1, "w": 0}, "精靈射手|英靈人形": {"g": 1, "w": 0}, "星墜女巫|魔槍": {"g": 1, "w": 1}, "異教徒|魔槍": {"g": 2, "w": 1}, "勇者|蝶舞者": {"g": 1, "w": 0}, "勇者|靈符師": {"g": 1, "w": 0}, "蝶舞者|靈符師": {"g": 1, "w": 0}, "獵巫人|矜貴之女": {"g": 2, "w": 1}, "獵巫人|記錄者": {"g": 1, "w": 0}, "矜貴之女|記錄者": {"g": 2, "w": 0}, "星墜女巫|聖弓": {"g": 1, "w": 1}, "星墜女巫|魔法少女": {"g": 1, "w": 1}, "聖弓|魔法少女": {"g": 1, "w": 1}, "神秘學者|聖庭檢察士": {"g": 4, "w": 3}, "神秘學者|魔槍": {"g": 1, "w": 0}, "聖庭檢察士|魔槍": {"g": 1, "w": 0}, "結界師|蒼炎魔女": {"g": 1, "w": 1}, "結界師|風之劍聖": {"g": 3, "w": 3}, "蒼炎魔女|風之劍聖": {"g": 1, "w": 1}, "冒險家|吟游詩人": {"g": 1, "w": 1}, "冒險家|賢者": {"g": 2, "w": 2}, "吟游詩人|賢者": {"g": 1, "w": 1}, "勇者|月之女神": {"g": 1, "w": 0}, "勇者|蒼炎魔女": {"g": 1, "w": 0}, "月之女神|蒼炎魔女": {"g": 1, "w": 0}, "元素師|格鬥家": {"g": 2, "w": 1}, "元素師|神官": {"g": 3, "w": 2}, "格鬥家|神官": {"g": 1, "w": 0}, "勇者|祈禱師": {"g": 2, "w": 2}, "勇者|血色劍靈": {"g": 1, "w": 1}, "祈禱師|血色劍靈": {"g": 1, "w": 1}, "冒險家|劍帝": {"g": 2, "w": 1}, "冒險家|神官": {"g": 1, "w": 0}, "劍帝|神官": {"g": 1, "w": 0}, "女僕長|暗殺者": {"g": 1, "w": 1}, "女僕長|格鬥家": {"g": 1, "w": 1}, "暗殺者|格鬥家": {"g": 1, "w": 1}, "冒險家|聖女": {"g": 1, "w": 0}, "聖女|聖槍騎士": {"g": 2, "w": 1}, "星墜女巫|神箭手": {"g": 2, "w": 2}, "神箭手|魔弓": {"g": 4, "w": 1}, "元素師|封印師": {"g": 1, "w": 0}, "元素師|血色劍靈": {"g": 3, "w": 0}, "封印師|血色劍靈": {"g": 1, "w": 0}, "賢者|靈符師": {"g": 1, "w": 1}, "靈符師|風之劍聖": {"g": 2, "w": 2}, "冒險家|狂戰士": {"g": 1, "w": 0}, "狂戰士|聖槍騎士": {"g": 1, "w": 0}, "元素師|紅蓮騎士": {"g": 1, "w": 1}, "元素師|聖庭檢察士": {"g": 2, "w": 2}, "封印師|神箭手": {"g": 1, "w": 0}, "神箭手|英靈人形": {"g": 1, "w": 0}, "紅蓮騎士|魔槍": {"g": 1, "w": 1}, "聖槍騎士|魔槍": {"g": 1, "w": 1}, "異教徒|紅衣/鑄律": {"g": 1, "w": 0}, "瘟疫法師|紅衣/鑄律": {"g": 1, "w": 0}, "仲裁者|紅蓮騎士": {"g": 2, "w": 2}, "仲裁者|靈魂術士": {"g": 2, "w": 2}, "紅蓮騎士|靈魂術士": {"g": 4, "w": 2}, "星墜女巫|蝶舞者": {"g": 3, "w": 2}, "蝶舞者|魔弓": {"g": 2, "w": 1}, "天使|靈魂術士": {"g": 1, "w": 0}, "祈禱師|靈魂術士": {"g": 1, "w": 0}, "異教徒|聖庭檢察士": {"g": 1, "w": 0}, "異教徒|陰陽師": {"g": 2, "w": 0}, "聖庭檢察士|陰陽師": {"g": 1, "w": 0}, "染污者|神秘學者": {"g": 1, "w": 1}, "染污者|紅蓮騎士": {"g": 1, "w": 1}, "神秘學者|紅蓮騎士": {"g": 1, "w": 1}, "紅衣/鑄律|聖庭檢察士": {"g": 4, "w": 1}, "紅衣/鑄律|聖槍騎士": {"g": 1, "w": 0}, "冒險家|魔弓": {"g": 1, "w": 1}, "女僕長|魔弓": {"g": 2, "w": 1}, "元素師|賢者": {"g": 1, "w": 1}, "神官|賢者": {"g": 1, "w": 1}, "英靈人形|風之劍聖": {"g": 1, "w": 0}, "風之劍聖|魔槍": {"g": 1, "w": 0}, "女僕長|神官": {"g": 1, "w": 1}, "神官|聖槍騎士": {"g": 1, "w": 1}, "元素師|染污者": {"g": 1, "w": 0}, "元素師|陰陽師": {"g": 1, "w": 0}, "染污者|陰陽師": {"g": 1, "w": 0}, "聖槍騎士|賢者": {"g": 1, "w": 1}, "聖槍騎士|風之劍聖": {"g": 1, "w": 1}, "女僕長|獸靈武士": {"g": 6, "w": 3}, "獸靈武士|魔槍": {"g": 3, "w": 1}, "矜貴之女|魔法少女": {"g": 1, "w": 0}, "記錄者|魔法少女": {"g": 1, "w": 0}, "傳教士|獵巫人": {"g": 1, "w": 1}, "傳教士|精靈射手": {"g": 1, "w": 1}, "獵巫人|精靈射手": {"g": 1, "w": 1}, "紅蓮騎士|紅衣/鑄律": {"g": 2, "w": 0}, "傳教士|魔槍": {"g": 1, "w": 1}, "聖殿騎士|魔槍": {"g": 1, "w": 1}, "勇者|星墜女巫": {"g": 1, "w": 1}, "勇者|獸靈武士": {"g": 1, "w": 1}, "星墜女巫|獸靈武士": {"g": 1, "w": 1}, "元素師|紅衣/鑄律": {"g": 1, "w": 0}, "元素師|記錄者": {"g": 1, "w": 0}, "紅衣/鑄律|記錄者": {"g": 1, "w": 0}, "劍帝|紅蓮騎士": {"g": 1, "w": 0}, "劍帝|聖庭檢察士": {"g": 1, "w": 0}, "異教徒|血色劍靈": {"g": 2, "w": 1}, "異教徒|魔劍士": {"g": 1, "w": 1}, "血色劍靈|魔劍士": {"g": 1, "w": 1}, "精靈射手|魔槍": {"g": 2, "w": 1}, "魔弓|魔槍": {"g": 1, "w": 0}, "天使|神秘學者": {"g": 1, "w": 0}, "祈禱師|神秘學者": {"g": 1, "w": 0}, "傳教士|結界師": {"g": 1, "w": 1}, "傳教士|風之劍聖": {"g": 2, "w": 2}, "紅衣/鑄律|聖女": {"g": 1, "w": 0}, "聖女|聖庭檢察士": {"g": 1, "w": 0}, "仲裁者|血色劍靈": {"g": 1, "w": 1}, "紅蓮騎士|血色劍靈": {"g": 1, "w": 1}, "封印師|星墜女巫": {"g": 1, "w": 0}, "封印師|蝶舞者": {"g": 1, "w": 0}, "勇者|神官": {"g": 1, "w": 1}, "祈禱師|神官": {"g": 2, "w": 1}, "女僕長|異教徒": {"g": 1, "w": 0}, "女僕長|血色劍靈": {"g": 1, "w": 0}, "天使|封印師": {"g": 1, "w": 1}, "天使|魔槍": {"g": 2, "w": 2}, "元素師|靈魂術士": {"g": 2, "w": 0}, "血色劍靈|靈魂術士": {"g": 1, "w": 0}, "月之女神|精靈射手": {"g": 2, "w": 1}, "月之女神|聖庭檢察士": {"g": 2, "w": 1}, "精靈射手|聖庭檢察士": {"g": 1, "w": 1}, "冒險家|神秘學者": {"g": 1, "w": 0}, "冒險家|靈魂術士": {"g": 1, "w": 0}, "神秘學者|靈魂術士": {"g": 1, "w": 0}, "精靈射手|結界師": {"g": 1, "w": 1}, "精靈射手|風之劍聖": {"g": 1, "w": 1}, "傳教士|紅衣/鑄律": {"g": 1, "w": 1}, "紅衣/鑄律|風之劍聖": {"g": 1, "w": 1}, "格鬥家|神秘學者": {"g": 4, "w": 3}, "格鬥家|血色劍靈": {"g": 1, "w": 1}, "神秘學者|血色劍靈": {"g": 1, "w": 1}, "天使|風之劍聖": {"g": 2, "w": 0}, "祈禱師|風之劍聖": {"g": 1, "w": 0}, "瘟疫法師|賢者": {"g": 1, "w": 1}, "瘟疫法師|靈魂術士": {"g": 1, "w": 1}, "異教徒|祈禱師": {"g": 1, "w": 0}, "異教徒|魔弓": {"g": 1, "w": 0}, "祈禱師|魔弓": {"g": 1, "w": 0}, "女僕長|血之巫女": {"g": 1, "w": 1}, "獸靈武士|血之巫女": {"g": 1, "w": 1}, "神秘學者|蝶舞者": {"g": 1, "w": 0}, "蝶舞者|風之劍聖": {"g": 1, "w": 0}, "紅蓮騎士|蒼炎魔女": {"g": 1, "w": 1}, "蒼炎魔女|靈魂術士": {"g": 2, "w": 1}, "聖槍騎士|血色劍靈": {"g": 2, "w": 0}, "聖槍騎士|魔弓": {"g": 1, "w": 0}, "血色劍靈|魔弓": {"g": 1, "w": 0}, "女僕長|魔劍士": {"g": 2, "w": 1}, "獸靈武士|魔劍士": {"g": 2, "w": 1}, "女僕長|蝶舞者": {"g": 1, "w": 0}, "封印師|狂戰士": {"g": 3, "w": 3}, "封印師|祈禱師": {"g": 2, "w": 2}, "狂戰士|祈禱師": {"g": 2, "w": 2}, "勇者|紅蓮騎士": {"g": 2, "w": 0}, "勇者|魔劍士": {"g": 1, "w": 0}, "紅蓮騎士|魔劍士": {"g": 1, "w": 0}, "冒險家|封印師": {"g": 1, "w": 1}, "封印師|賢者": {"g": 1, "w": 1}, "狂戰士|蝶舞者": {"g": 1, "w": 0}, "狂戰士|血之巫女": {"g": 1, "w": 0}, "蝶舞者|血之巫女": {"g": 1, "w": 0}, "冒險家|蝶舞者": {"g": 1, "w": 1}, "天使|神官": {"g": 1, "w": 0}, "聖庭檢察士|英靈人形": {"g": 3, "w": 2}, "聖庭檢察士|血色劍靈": {"g": 1, "w": 0}, "英靈人形|血色劍靈": {"g": 2, "w": 0}, "元素師|異教徒": {"g": 1, "w": 1}, "元素師|蒼炎魔女": {"g": 1, "w": 1}, "異教徒|蒼炎魔女": {"g": 1, "w": 1}, "神官|神秘學者": {"g": 1, "w": 1}, "冒險家|紅蓮騎士": {"g": 1, "w": 1}, "元素師|吟游詩人": {"g": 1, "w": 0}, "吟游詩人|血色劍靈": {"g": 1, "w": 0}, "結界師|聖槍騎士": {"g": 1, "w": 0}, "結界師|血色劍靈": {"g": 1, "w": 0}, "蒼炎魔女|血之巫女": {"g": 1, "w": 0}, "血之巫女|靈魂術士": {"g": 1, "w": 0}, "元素師|星墜女巫": {"g": 1, "w": 1}, "元素師|神箭手": {"g": 2, "w": 1}, "染污者|血色劍靈": {"g": 1, "w": 1}, "染污者|賢者": {"g": 1, "w": 1}, "血色劍靈|賢者": {"g": 1, "w": 1}, "獸靈武士|紅蓮騎士": {"g": 2, "w": 1}, "獸靈武士|紅衣/鑄律": {"g": 1, "w": 0}, "傳教士|聖庭檢察士": {"g": 1, "w": 1}, "傳教士|賢者": {"g": 1, "w": 1}, "聖庭檢察士|賢者": {"g": 1, "w": 1}, "女僕長|英靈人形": {"g": 1, "w": 0}, "冒險家|記錄者": {"g": 1, "w": 1}, "冒險家|風之劍聖": {"g": 1, "w": 1}, "記錄者|風之劍聖": {"g": 1, "w": 1}, "劍帝|異教徒": {"g": 1, "w": 0}, "劍帝|陰陽師": {"g": 1, "w": 0}, "矜貴之女|賢者": {"g": 2, "w": 1}, "矜貴之女|風之劍聖": {"g": 1, "w": 0}, "獵巫人|神箭手": {"g": 1, "w": 1}, "獵巫人|紅衣/鑄律": {"g": 1, "w": 1}, "冒險家|魔劍士": {"g": 1, "w": 1}, "暗殺者|魔劍士": {"g": 1, "w": 1}, "格鬥家|紅衣/鑄律": {"g": 2, "w": 1}, "神秘學者|紅衣/鑄律": {"g": 2, "w": 1}, "勇者|矜貴之女": {"g": 1, "w": 0}, "矜貴之女|紅蓮騎士": {"g": 1, "w": 0}, "仲裁者|神箭手": {"g": 1, "w": 1}, "仲裁者|陰陽師": {"g": 1, "w": 1}, "神箭手|陰陽師": {"g": 1, "w": 1}, "吟游詩人|靈符師": {"g": 1, "w": 1}, "吟游詩人|魔槍": {"g": 1, "w": 1}, "靈符師|魔槍": {"g": 2, "w": 1}, "狂戰士|英靈人形": {"g": 1, "w": 0}, "狂戰士|蒼炎魔女": {"g": 1, "w": 0}, "英靈人形|蒼炎魔女": {"g": 1, "w": 0}, "染污者|靈魂術士": {"g": 1, "w": 1}, "染污者|魔槍": {"g": 1, "w": 1}, "靈魂術士|魔槍": {"g": 1, "w": 1}, "月之女神|紅衣/鑄律": {"g": 2, "w": 0}, "月之女神|血之巫女": {"g": 2, "w": 0}, "女武神|神箭手": {"g": 2, "w": 0}, "女武神|魔弓": {"g": 1, "w": 0}, "格鬥家|蒼炎魔女": {"g": 1, "w": 1}, "紅衣/鑄律|蒼炎魔女": {"g": 1, "w": 1}, "聖庭檢察士|靈魂術士": {"g": 1, "w": 1}, "英靈人形|靈魂術士": {"g": 1, "w": 1}, "仲裁者|異教徒": {"g": 1, "w": 0}, "仲裁者|神秘學者": {"g": 1, "w": 0}, "異教徒|神秘學者": {"g": 1, "w": 0}, "異教徒|靈符師": {"g": 1, "w": 0}, "冒險家|瘟疫法師": {"g": 1, "w": 1}, "劍帝|瘟疫法師": {"g": 1, "w": 1}, "英靈人形|陰陽師": {"g": 1, "w": 0}, "血色劍靈|陰陽師": {"g": 1, "w": 0}, "吟游詩人|獵巫人": {"g": 1, "w": 1}, "吟游詩人|血之巫女": {"g": 1, "w": 1}, "獵巫人|血之巫女": {"g": 1, "w": 1}, "陰陽師|魔劍士": {"g": 1, "w": 0}, "獵巫人|賢者": {"g": 1, "w": 1}, "星墜女巫|月之女神": {"g": 1, "w": 1}, "星墜女巫|靈魂術士": {"g": 2, "w": 1}, "月之女神|靈魂術士": {"g": 1, "w": 1}, "格鬥家|神箭手": {"g": 1, "w": 0}, "格鬥家|魔弓": {"g": 1, "w": 0}, "月之女神|紅蓮騎士": {"g": 2, "w": 0}, "紅蓮騎士|血之巫女": {"g": 1, "w": 0}, "聖女|聖弓": {"g": 2, "w": 2}, "聖弓|聖槍騎士": {"g": 1, "w": 1}, "神箭手|靈符師": {"g": 1, "w": 1}, "神箭手|風之劍聖": {"g": 2, "w": 1}, "天使|結界師": {"g": 1, "w": 0}, "女武神|結界師": {"g": 1, "w": 0}, "瘟疫法師|聖庭檢察士": {"g": 1, "w": 1}, "瘟疫法師|英靈人形": {"g": 2, "w": 1}, "女武神|聖女": {"g": 2, "w": 0}, "女武神|聖殿騎士": {"g": 1, "w": 0}, "聖女|聖殿騎士": {"g": 1, "w": 0}, "獸靈武士|神箭手": {"g": 1, "w": 0}, "獸靈武士|風之劍聖": {"g": 1, "w": 0}, "格鬥家|精靈射手": {"g": 1, "w": 1}, "格鬥家|魔槍": {"g": 2, "w": 2}, "月之女神|神秘學者": {"g": 1, "w": 0}, "月之女神|陰陽師": {"g": 2, "w": 0}, "神秘學者|陰陽師": {"g": 1, "w": 0}, "星墜女巫|血色劍靈": {"g": 1, "w": 1}, "瘟疫法師|血色劍靈": {"g": 1, "w": 1}, "元素師|魔弓": {"g": 1, "w": 0}, "女武神|格鬥家": {"g": 1, "w": 1}, "女武神|神秘學者": {"g": 2, "w": 2}, "元素師|獵巫人": {"g": 1, "w": 0}, "獵巫人|靈魂術士": {"g": 1, "w": 0}, "月之女神|聖女": {"g": 2, "w": 2}, "月之女神|英靈人形": {"g": 1, "w": 1}, "聖女|英靈人形": {"g": 1, "w": 1}, "月之女神|瘟疫法師": {"g": 2, "w": 1}, "瘟疫法師|陰陽師": {"g": 1, "w": 0}, "星墜女巫|暗殺者": {"g": 1, "w": 1}, "星墜女巫|神官": {"g": 1, "w": 1}, "暗殺者|神官": {"g": 1, "w": 1}, "噬神者|獸靈武士": {"g": 1, "w": 1}, "噬神者|紅蓮騎士": {"g": 1, "w": 1}, "天使|月之女神": {"g": 1, "w": 0}, "月之女神|風之劍聖": {"g": 1, "w": 0}, "女武神|聖庭檢察士": {"g": 1, "w": 1}, "星墜女巫|紅蓮騎士": {"g": 1, "w": 0}, "天使|精靈射手": {"g": 1, "w": 0}, "天使|紅衣/鑄律": {"g": 1, "w": 0}, "精靈射手|紅衣/鑄律": {"g": 2, "w": 0}, "仲裁者|格鬥家": {"g": 1, "w": 1}, "格鬥家|靈魂術士": {"g": 1, "w": 1}, "封印師|紅蓮騎士": {"g": 1, "w": 1}, "狂戰士|紅蓮騎士": {"g": 1, "w": 1}, "劍帝|格鬥家": {"g": 1, "w": 1}, "劍帝|神秘學者": {"g": 1, "w": 1}, "女武神|神官": {"g": 1, "w": 0}, "女武神|精靈射手": {"g": 1, "w": 0}, "神官|精靈射手": {"g": 1, "w": 0}, "天使|英靈人形": {"g": 2, "w": 1}, "天使|靈符師": {"g": 1, "w": 1}, "英靈人形|靈符師": {"g": 1, "w": 1}, "仲裁者|封印師": {"g": 1, "w": 0}, "仲裁者|月之女神": {"g": 1, "w": 0}, "封印師|月之女神": {"g": 1, "w": 0}, "聖槍騎士|血之巫女": {"g": 1, "w": 0}, "聖槍騎士|靈符師": {"g": 1, "w": 0}, "血之巫女|靈符師": {"g": 1, "w": 0}, "暗殺者|狂戰士": {"g": 1, "w": 0}, "暗殺者|聖殿騎士": {"g": 1, "w": 0}, "狂戰士|聖殿騎士": {"g": 1, "w": 0}, "天使|格鬥家": {"g": 1, "w": 1}, "暗殺者|紅蓮騎士": {"g": 1, "w": 0}, "暗殺者|蝶舞者": {"g": 1, "w": 0}, "紅蓮騎士|蝶舞者": {"g": 1, "w": 0}, "瘟疫法師|聖女": {"g": 1, "w": 1}, "神官|紅蓮騎士": {"g": 1, "w": 0}, "神官|靈魂術士": {"g": 1, "w": 0}, "封印師|染污者": {"g": 1, "w": 1}, "染污者|英靈人形": {"g": 1, "w": 1}, "神箭手|聖女": {"g": 1, "w": 0}, "天使|瘟疫法師": {"g": 2, "w": 1}, "天使|血之巫女": {"g": 1, "w": 1}, "瘟疫法師|血之巫女": {"g": 1, "w": 1}, "元素師|靈符師": {"g": 1, "w": 1}, "格鬥家|靈符師": {"g": 1, "w": 1}, "劍帝|染污者": {"g": 1, "w": 0}, "劍帝|祈禱師": {"g": 1, "w": 0}, "染污者|祈禱師": {"g": 1, "w": 0}, "神官|聖女": {"g": 1, "w": 1}, "神官|聖弓": {"g": 1, "w": 1}};
+
+
+// 組合加乘資料：1.3 第二頁角色配對矩陣
+const manualPairMult={"仲裁者|劍帝": 1.05, "仲裁者|月之女神": 1.02, "仲裁者|異教徒": 1.05, "仲裁者|瘟疫法師": 1.2, "仲裁者|神箭手": 1.02, "仲裁者|紅蓮騎士": 1.02, "仲裁者|血色劍靈": 1.02, "仲裁者|賢者": 1.05, "仲裁者|靈魂術士": 1.2, "傳教士|元素師": 1.1, "傳教士|勇者": 1.02, "傳教士|月之女神": 1.02, "傳教士|染污者": 1.05, "傳教士|格鬥家": 1.02, "傳教士|獵巫人": 1.05, "傳教士|異教徒": 1.02, "傳教士|聖女": 1.02, "傳教士|聖殿騎士": 1.02, "傳教士|蒼炎魔女": 1.1, "傳教士|風之劍聖": 1.05, "傳教士|魔槍": 1.1, "元素師|冒險家": 1.2, "元素師|吟游詩人": 1.1, "元素師|女僕長": 1.2, "元素師|神官": 1.05, "元素師|神箭手": 1.02, "元素師|結界師": 1.05, "元素師|蝶舞者": 1.02, "元素師|賢者": 1.02, "元素師|靈魂術士": 1.02, "冒險家|劍帝": 1.2, "冒險家|女僕長": 1.05, "冒險家|女武神": 1.02, "冒險家|封印師": 1.05, "冒險家|戰鬥法師": 1.02, "冒險家|星墜女巫": 1.02, "冒險家|暗殺者": 1.2, "冒險家|月之女神": 1.02, "冒險家|異教徒": 1.02, "冒險家|神秘學者": 1.2, "冒險家|聖庭檢察士": 1.05, "冒險家|英靈人形": 1.2, "冒險家|血之巫女": 1.1, "冒險家|魔劍士": 1.05, "冒險家|魔弓": 1.1, "冒險家|魔法少女": 1.05, "劍帝|天使": 1.02, "劍帝|星墜女巫": 0.95, "劍帝|異教徒": 1.05, "劍帝|祈禱師": 1.1, "劍帝|結界師": 1.1, "劍帝|血之巫女": 0.95, "劍帝|陰陽師": 1.02, "劍帝|靈魂術士": 1.1, "劍帝|魔法少女": 1.05, "勇者|月之女神": 1.02, "勇者|異教徒": 1.02, "勇者|祈禱師": 1.1, "勇者|紅蓮騎士": 1.1, "勇者|結界師": 1.1, "勇者|蒼炎魔女": 1.02, "勇者|血之巫女": 1.1, "勇者|陰陽師": 1.02, "勇者|靈魂術士": 1.1, "勇者|魔槍": 1.02, "吟游詩人|戰鬥法師": 1.05, "吟游詩人|星墜女巫": 1.05, "吟游詩人|瘟疫法師": 1.2, "吟游詩人|矜貴之女": 1.05, "吟游詩人|蝶舞者": 1.02, "吟游詩人|血色劍靈": 1.05, "吟游詩人|記錄者": 1.02, "吟游詩人|靈符師": 1.2, "吟游詩人|魔弓": 1.02, "吟游詩人|魔法少女": 1.2, "噬神者|女武神": 1.02, "噬神者|獵巫人": 1.02, "噬神者|異教徒": 1.02, "噬神者|瘟疫法師": 0.95, "噬神者|祈禱師": 1.2, "噬神者|聖庭檢察士": 1.02, "噬神者|蝶舞者": 1.1, "噬神者|陰陽師": 1.02, "噬神者|靈符師": 1.02, "天使|封印師": 1.02, "天使|月之女神": 1.02, "天使|瘟疫法師": 1.1, "天使|神秘學者": 1.1, "天使|聖庭檢察士": 1.02, "天使|聖槍騎士": 1.05, "天使|聖殿騎士": 1.02, "天使|英靈人形": 1.2, "天使|蒼炎魔女": 1.05, "天使|血之巫女": 1.1, "天使|賢者": 1.05, "天使|魔槍": 1.05, "女僕長|戰鬥法師": 1.02, "女僕長|格鬥家": 1.02, "女僕長|獵巫人": 1.2, "女僕長|獸靈武士": 1.2, "女僕長|祈禱師": 1.02, "女僕長|結界師": 1.02, "女僕長|英靈人形": 1.1, "女僕長|靈符師": 1.1, "女僕長|靈魂術士": 1.02, "女僕長|魔槍": 1.1, "女武神|月之女神": 1.02, "女武神|瘟疫法師": 1.1, "女武神|祈禱師": 1.1, "女武神|神官": 1.1, "女武神|紅蓮騎士": 1.1, "女武神|結界師": 1.1, "女武神|聖女": 1.1, "女武神|聖庭檢察士": 1.02, "女武神|聖槍騎士": 1.02, "女武神|聖殿騎士": 1.05, "女武神|英靈人形": 1.05, "女武神|血色劍靈": 1.1, "女武神|陰陽師": 1.1, "女武神|風之劍聖": 1.05, "女武神|魔劍士": 1.1, "女武神|魔槍": 1.02, "封印師|紅衣主教": 1.02, "封印師|血之巫女": 1.02, "封印師|賢者": 1.02, "戰鬥法師|星墜女巫": 1.05, "戰鬥法師|異教徒": 1.02, "戰鬥法師|祈禱師": 1.1, "戰鬥法師|聖弓": 1.02, "戰鬥法師|蝶舞者": 1.1, "戰鬥法師|靈魂術士": 1.02, "星墜女巫|異教徒": 1.02, "星墜女巫|瘟疫法師": 0.95, "星墜女巫|蝶舞者": 1.02, "星墜女巫|血之巫女": 1.05, "星墜女巫|血色劍靈": 0.95, "星墜女巫|靈魂術士": 1.02, "星墜女巫|風之劍聖": 0.95, "暗殺者|月之女神": 1.02, "暗殺者|祈禱師": 1.1, "暗殺者|紅衣主教": 1.05, "暗殺者|結界師": 1.1, "月之女神|獸靈武士": 1.02, "月之女神|異教徒": 1.02, "月之女神|瘟疫法師": 1.02, "月之女神|神官": 1.02, "月之女神|紅蓮騎士": 1.1, "月之女神|紅衣主教": 1.2, "月之女神|聖女": 1.1, "月之女神|聖槍騎士": 1.02, "月之女神|聖殿騎士": 1.2, "月之女神|蒼炎魔女": 1.02, "月之女神|蝶舞者": 1.02, "月之女神|血之巫女": 1.1, "月之女神|陰陽師": 1.02, "月之女神|靈魂術士": 1.02, "染污者|獸靈武士": 1.02, "染污者|瘟疫法師": 0.95, "染污者|祈禱師": 1.02, "染污者|結界師": 1.02, "染污者|聖庭檢察士": 1.02, "染污者|靈魂術士": 1.02, "格鬥家|異教徒": 1.02, "格鬥家|祈禱師": 1.1, "格鬥家|紅蓮騎士": 1.1, "格鬥家|紅衣主教": 1.02, "格鬥家|結界師": 1.1, "格鬥家|聖殿騎士": 1.02, "格鬥家|蒼炎魔女": 1.02, "格鬥家|血之巫女": 1.02, "狂戰士|祈禱師": 1.1, "狂戰士|結界師": 1.1, "狂戰士|風之劍聖": 1.05, "狂戰士|魔劍士": 1.05, "狂戰士|魔槍": 1.05, "獵巫人|祈禱師": 1.05, "獵巫人|紅蓮騎士": 1.02, "獵巫人|紅衣主教": 1.05, "獵巫人|結界師": 1.02, "獵巫人|聖弓": 1.02, "獵巫人|蒼炎魔女": 1.02, "獵巫人|蝶舞者": 1.02, "獵巫人|靈符師": 1.1, "獵巫人|魔槍": 1.02, "獸靈武士|祈禱師": 1.1, "獸靈武士|結界師": 1.1, "獸靈武士|聖殿騎士": 1.1, "獸靈武士|靈符師": 1.1, "獸靈武士|魔劍士": 1.2, "獸靈武士|魔槍": 1.2, "異教徒|瘟疫法師": 1.2, "異教徒|矜貴之女": 1.02, "異教徒|神秘學者": 1.02, "異教徒|神箭手": 1.02, "異教徒|紅蓮騎士": 1.02, "異教徒|血之巫女": 1.02, "異教徒|賢者": 1.02, "異教徒|陰陽師": 1.02, "異教徒|靈符師": 1.02, "異教徒|靈魂術士": 1.02, "異教徒|風之劍聖": 1.05, "異教徒|魔弓": 1.02, "瘟疫法師|神官": 1.2, "瘟疫法師|紅蓮騎士": 1.2, "瘟疫法師|紅衣主教": 1.02, "瘟疫法師|聖女": 1.2, "瘟疫法師|聖庭檢察士": 1.1, "瘟疫法師|聖弓": 1.02, "瘟疫法師|聖殿騎士": 0.95, "瘟疫法師|英靈人形": 1.02, "瘟疫法師|蒼炎魔女": 0.95, "瘟疫法師|蝶舞者": 1.05, "瘟疫法師|血之巫女": 0.95, "瘟疫法師|賢者": 1.2, "瘟疫法師|陰陽師": 0.95, "瘟疫法師|靈魂術士": 0.95, "瘟疫法師|魔槍": 0.95, "瘟疫法師|魔法少女": 1.05, "矜貴之女|蝶舞者": 1.1, "矜貴之女|靈符師": 1.02, "矜貴之女|靈魂術士": 1.02, "矜貴之女|魔法少女": 1.02, "祈禱師|神箭手": 1.1, "祈禱師|精靈射手": 1.05, "祈禱師|紅蓮騎士": 1.1, "祈禱師|結界師": 1.02, "祈禱師|聖女": 1.02, "祈禱師|聖槍騎士": 1.1, "祈禱師|聖殿騎士": 1.05, "祈禱師|英靈人形": 1.02, "祈禱師|血色劍靈": 1.1, "祈禱師|陰陽師": 1.05, "祈禱師|風之劍聖": 1.1, "祈禱師|魔劍士": 1.1, "祈禱師|魔弓": 1.1, "祈禱師|魔槍": 1.02, "神官|神箭手": 1.02, "神官|聖庭檢察士": 1.02, "神官|聖弓": 1.1, "神官|聖槍騎士": 1.1, "神官|聖殿騎士": 1.02, "神官|蒼炎魔女": 1.1, "神官|血之巫女": 1.1, "神官|賢者": 1.2, "神官|靈魂術士": 1.02, "神官|風之劍聖": 1.05, "神官|魔槍": 1.02, "神秘學者|神箭手": 1.02, "神秘學者|蝶舞者": 1.2, "神秘學者|血之巫女": 1.02, "神秘學者|陰陽師": 1.02, "神秘學者|靈魂術士": 1.02, "神箭手|紅衣主教": 1.2, "神箭手|結界師": 1.05, "神箭手|英靈人形": 1.1, "神箭手|蒼炎魔女": 1.05, "神箭手|蝶舞者": 1.02, "神箭手|血之巫女": 1.2, "神箭手|賢者": 1.05, "精靈射手|結界師": 1.1, "紅蓮騎士|紅衣主教": 1.02, "紅蓮騎士|聖庭檢察士": 1.02, "紅蓮騎士|聖槍騎士": 1.2, "紅蓮騎士|聖殿騎士": 1.1, "紅蓮騎士|蒼炎魔女": 1.02, "紅蓮騎士|血之巫女": 1.02, "紅蓮騎士|靈魂術士": 1.05, "紅蓮騎士|魔劍士": 1.2, "紅蓮騎士|魔槍": 1.02, "紅衣主教|聖女": 1.02, "紅衣主教|聖庭檢察士": 1.1, "紅衣主教|聖弓": 1.02, "紅衣主教|聖槍騎士": 1.02, "紅衣主教|聖殿騎士": 1.05, "紅衣主教|英靈人形": 1.02, "紅衣主教|蒼炎魔女": 1.02, "紅衣主教|血之巫女": 1.05, "紅衣主教|血色劍靈": 1.02, "紅衣主教|靈魂術士": 1.05, "結界師|聖槍騎士": 1.1, "結界師|聖殿騎士": 1.02, "結界師|蒼炎魔女": 1.05, "結界師|蝶舞者": 1.1, "結界師|血之巫女": 1.02, "結界師|血色劍靈": 1.1, "結界師|風之劍聖": 1.1, "結界師|魔劍士": 1.1, "結界師|魔弓": 1.05, "聖女|聖庭檢察士": 1.05, "聖女|聖弓": 1.1, "聖女|聖槍騎士": 1.1, "聖女|聖殿騎士": 1.05, "聖庭檢察士|聖弓": 1.02, "聖庭檢察士|聖槍騎士": 1.05, "聖庭檢察士|聖殿騎士": 1.1, "聖庭檢察士|蒼炎魔女": 1.1, "聖庭檢察士|蝶舞者": 1.02, "聖庭檢察士|血之巫女": 1.1, "聖庭檢察士|賢者": 1.1, "聖庭檢察士|魔槍": 1.02, "聖弓|聖殿騎士": 1.02, "聖槍騎士|聖殿騎士": 1.02, "聖槍騎士|魔槍": 1.02, "聖殿騎士|蝶舞者": 1.02, "聖殿騎士|風之劍聖": 0.95, "英靈人形|蒼炎魔女": 1.02, "英靈人形|血之巫女": 1.02, "英靈人形|靈符師": 1.02, "英靈人形|靈魂術士": 1.02, "英靈人形|魔弓": 1.02, "蒼炎魔女|賢者": 1.02, "蒼炎魔女|靈魂術士": 1.05, "蒼炎魔女|風之劍聖": 0.95, "蒼炎魔女|魔弓": 1.02, "蒼炎魔女|魔槍": 1.1, "蝶舞者|血之巫女": 1.02, "蝶舞者|血色劍靈": 1.1, "蝶舞者|靈魂術士": 1.02, "血之巫女|賢者": 1.1, "血之巫女|靈符師": 1.05, "血之巫女|靈魂術士": 1.05, "血之巫女|風之劍聖": 0.95, "血之巫女|魔弓": 1.02, "血之巫女|魔槍": 1.02, "血色劍靈|賢者": 1.1, "血色劍靈|陰陽師": 1.1, "血色劍靈|風之劍聖": 1.1, "血色劍靈|魔劍士": 1.05, "賢者|靈符師": 1.1, "賢者|靈魂術士": 1.2, "賢者|風之劍聖": 0.95, "陰陽師|風之劍聖": 1.1, "陰陽師|魔法少女": 1.05, "靈符師|靈魂術士": 1.05, "靈魂術士|魔槍": 1.02, "靈魂術士|魔法少女": 1.05, "風之劍聖|魔劍士": 1.05, "風之劍聖|魔槍": 0.95};
+const manualTripleMult={"天使|血之巫女|靈魂術士": 1.5, "神箭手|紅衣主教|血之巫女": 1.4};
+const holyCourt=new Set(["聖女", "天使", "聖槍騎士", "神官", "月之女神", "聖弓", "聖庭檢察士", "聖殿騎士", "傳教士"]);
+const strongRoleMult={"傳教士": 1.05, "元素師": 1.05, "冒險家": 1.1, "劍帝": 1.1, "女僕長": 1.05, "月之女神": 1.05, "異教徒": 1.05, "神秘學者": 1.05, "紅蓮騎士": 1.05, "紅衣主教": 1.05, "聖槍騎士": 1.05, "英靈人形": 1.05, "蒼炎魔女": 1.1, "血之巫女": 1.05, "血色劍靈": 1.1, "賢者": 1.1, "靈魂術士": 1.05, "魔槍": 1.1};
+const positionPreference={"風之劍聖": "前", "狂戰士": "前", "神箭手": "前", "封印師": "前", "暗殺者": "後", "聖女": "沒差", "天使": "前", "魔法少女": "後", "魔劍士": "前", "聖槍騎士": "前", "元素師": "後", "冒險家": "沒差", "瘟疫法師": "後", "仲裁者": "後", "神官": "後", "祈禱師": "後", "賢者": "後", "靈符師": "後", "劍帝": "前", "格鬥家": "前", "勇者": "前", "靈魂術士": "沒差", "血之巫女": "沒差", "蝶舞者": "後", "女武神": "前", "魔弓": "前", "紅蓮騎士": "沒差", "英靈人形": "前", "魔槍": "前", "蒼炎魔女": "後", "吟游詩人": "沒差", "精靈射手": "前", "陰陽師": "前", "血色劍靈": "前", "月之女神": "沒差", "獸靈武士": "前", "聖弓": "沒差", "紅衣主教": "沒差", "記錄者": "沒差", "聖庭檢察士": "沒差", "星墜女巫": "後", "戰鬥法師": "前", "獵巫人": "前", "聖殿騎士": "前", "矜貴之女": "後", "噬神者": "前", "神秘學者": "後", "女僕長": "前", "結界師": "後", "染污者": "沒差", "傳教士": "沒差", "異教徒": "沒差"};
+// 1.3 資源規則
+const gemUltimateRoles=new Set(["元素師", "女僕長", "星墜女巫", "暗殺者", "月之女神", "狂戰士", "獸靈武士", "瘟疫法師", "矜貴之女", "精靈射手", "聖弓", "聖槍騎士", "英靈人形", "血之巫女", "賢者", "靈魂術士", "魔劍士", "魔法少女"]);
+const resourceRole={"仲裁者": "不吃資源", "傳教士": "產資源", "元素師": "吃資源", "冒險家": "產資源", "劍帝": "吃資源", "勇者": "不吃資源", "吟游詩人": "吃資源", "噬神者": "不吃資源", "天使": "不吃資源", "女僕長": "產資源", "女武神": "產資源", "封印師": "產資源", "戰鬥法師": "產資源", "星墜女巫": "產資源", "暗殺者": "吃資源", "月之女神": "吃資源", "染污者": "吃資源", "格鬥家": "產資源", "狂戰士": "不吃資源", "獵巫人": "產資源", "獸靈武士": "吃資源", "異教徒": "吃資源", "瘟疫法師": "吃資源", "矜貴之女": "吃資源", "祈禱師": "吃資源", "神官": "不吃資源", "神秘學者": "吃資源", "神箭手": "產資源", "精靈射手": "產資源", "紅蓮騎士": "不吃資源", "紅衣主教": "產資源", "結界師": "產資源", "聖女": "吃資源", "聖庭檢察士": "產資源", "聖弓": "吃資源", "聖槍騎士": "不吃資源", "聖殿騎士": "吃資源", "英靈人形": "吃資源", "蒼炎魔女": "不吃資源", "蝶舞者": "吃資源", "血之巫女": "吃資源", "血色劍靈": "產資源", "記錄者": "產資源", "賢者": "不吃資源", "陰陽師": "不吃資源", "靈符師": "不吃資源", "靈魂術士": "不吃資源", "風之劍聖": "產資源", "魔劍士": "吃資源", "魔弓": "吃資源", "魔槍": "不吃資源", "魔法少女": "產資源"};
+
+
+
+const scoreCalibrationAnchors=[[46.008645, 30], [54.615014, 40], [61.589685, 67], [69.205287, 92], [78.463127, 99]];
+function calibrateScore(raw){
+  const a=scoreCalibrationAnchors;
+  if(raw<=a[0][0]) return a[0][1];
+  for(let i=0;i<a.length-1;i++){
+    const [x0,y0]=a[i], [x1,y1]=a[i+1];
+    if(raw<=x1){
+      const t=(raw-x0)/(x1-x0 || 1);
+      return y0+t*(y1-y0);
+    }
+  }
+  return 99;
+}
+
+
+// 正式規則：每次重新構築有 0.5% 機率進入錯字彩蛋。
+const TYPO_EASTER_EGG_RATE=0.005;
+let typoRouteActive=false,typoRouteStage=0,typoWrongNames={};
+const typoRules=[["士","土"],["師","帥"],["家","冢"],["者","耆"]];
+function makeTypoName(name){
+ if(name==="記錄者")return null;
+ for(const [from,to] of typoRules){if(name.includes(from))return name.replace(from,to);}return null;
+}
+function beginTypoRoute(){typoRouteActive=Math.random()<TYPO_EASTER_EGG_RATE;typoRouteStage=typoRouteActive?1:0;typoWrongNames={};}
+function injectTypoOffers(offers){
+ if(!typoRouteActive||!(round===1||round===2))return offers;
+ const eligible=characters.filter(c=>!seats.some(s=>s&&s.id===c.id)&&!used.has(c.id)&&c.name!=="記錄者"&&makeTypoName(c.name));
+ if(!eligible.length)return offers;
+ const c=eligible[Math.floor(Math.random()*eligible.length)];
+ let out=offers.filter(x=>x.id!==c.id).slice(0,4);out.push(c);out.sort(()=>Math.random()-.5);typoWrongNames[c.id]=makeTypoName(c.name);return out;
+}
+function injectRecorderOffer(offers){
+ if(!typoRouteActive||typoRouteStage!==3||round!==3)return offers;
+ const rec=characters.find(c=>c.name==="記錄者");if(!rec)return offers;
+ let out=offers.filter(x=>x.id!==rec.id).slice(0,4);out.push(rec);out.sort(()=>Math.random()-.5);return out;
+}
+function displayRoleName(c){return typoWrongNames[c.id]||c.name;}
+function registerTypoPick(c){
+ if(!typoRouteActive)return;
+ if(round===1){if(typoWrongNames[c.id])typoRouteStage=2;else{typoRouteActive=false;typoRouteStage=0;}}
+ else if(round===2){if(typoRouteStage===2&&typoWrongNames[c.id])typoRouteStage=3;else{typoRouteActive=false;typoRouteStage=0;}}
+ else if(round===3){if(typoRouteStage===3&&c.name==="記錄者")typoRouteStage=4;else{typoRouteActive=false;typoRouteStage=0;}}
+}
+
+function roleType(c){
+ const n=c.name;
+ if(/聖女|天使|神官|祈禱|賢者|紅衣主教|傳教士/.test(n))return"support";
+ if(/弓|射手|魔法少女|元素師|法師|女巫|術士|陰陽師|神秘學者/.test(n))return"ranged";
+ if(/劍|槍|騎士|武士|格鬥|勇者|狂戰|仲裁|噬神/.test(n))return"front";
+ return"utility";
+}
+let round=1,seats=[null,null,null],currentOffers=[],picked=null,used=new Set(),teamChoice=null,draftHistory=[];
+let playerName="",favoriteName="",nameLuck=0,favoriteSeen=false;
+function renderFavoriteGrid(){
+ const box=$("favoriteGrid"); if(!box)return;
+ box.innerHTML="";
+ characters.forEach(c=>{
+   const b=document.createElement("button");b.type="button";b.className="favorite-card"+(favoriteName===c.name?" selected":"");
+   b.innerHTML=`${c.image?`<img src="${c.image}" alt="">`:""}<span>${c.name}</span>`;
+   b.onclick=()=>{favoriteName=c.name;renderFavoriteGrid();};
+   box.appendChild(b);
+ });
+}
+
+function resetProfile(){
+ playerName="";favoriteName="";nameLuck=0;favoriteSeen=false;
+ if($("playerNameInput"))$("playerNameInput").value="";
+ if($("profileError"))$("profileError").textContent="";
+ $("gamePanel").classList.add("hidden");$("resultPanel").classList.add("hidden");
+ $("profilePanel").classList.remove("hidden");
+ renderFavoriteGrid();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startProfileGame(){
+ const n=$("playerNameInput").value.trim();
+ if(!n||!favoriteName){$("profileError").textContent="請先輸入姓名並選擇本命角色。";return;}
+ playerName=n;
+ nameLuck=Math.floor(Math.random()*7)-3; // 每次重新載入／重新輸入開始時重新抽 -3~+3
+ favoriteSeen=false;
+ $("profileError").textContent="";
+ $("profilePanel").classList.add("hidden");
+ randomStart();
+}
+function markFavoriteSeen(){if(favoriteName&&currentOffers.some(c=>c.name===favoriteName))favoriteSeen=true;}
+
+const $=id=>document.getElementById(id);
+
+function sampleFive(){
+ let pool=characters.filter(c=>!used.has(c.id)&&!seats.some(s=>s&&s.id===c.id));
+ if(pool.length<5)pool=characters.filter(c=>!seats.some(s=>s&&s.id===c.id));
+ for(let i=pool.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+ let out=pool.slice(0,5);out=injectTypoOffers(out);out=injectRecorderOffer(out);out.forEach(c=>used.add(c.id));return out;
+}
+
+
+function renderOffers(){
+ markFavoriteSeen();
+ $("offers").innerHTML="";
+ currentOffers.forEach(c=>{let b=document.createElement("button");b.className="card"+(picked&&picked.id===c.id?" selected":"");
+ b.innerHTML=`<span class="pickmark">✓</span><div class="avatar">${c.image?`<img src="${c.image}">`:""}</div><div class="name">${displayRoleName(c)}</div>`;
+ b.onclick=()=>{picked=c;renderOffers();renderSeats();$("instruction").textContent=`已選「${c.name}」，請決定座次。`;};$("offers").appendChild(b);});
+}
+function renderSeats(){
+ const map=$("seatMap"); if(!map) return;
+ map.querySelectorAll(".map-seat").forEach(el=>el.remove());
+ const order=[
+   {code:"紅1",team:"red",cls:"pos-r1",idx:0},
+   {code:"藍1",team:"blue",cls:"pos-b1",idx:0},
+   {code:"藍2",team:"blue",cls:"pos-b2",idx:1},
+   {code:"紅2",team:"red",cls:"pos-r2",idx:1},
+   {code:"藍3",team:"blue",cls:"pos-b3",idx:2},
+   {code:"紅3",team:"red",cls:"pos-r3",idx:2}
+ ];
+ order.forEach(pos=>{
+   let isMine=pos.team===teamChoice, c=isMine?seats[pos.idx]:null;
+   let d=document.createElement("div");
+   d.className=`map-seat ${pos.team} ${pos.cls} ${isMine?"mine":"opp"} ${isMine&&!c&&picked?"available":""}`;
+   let first=pos.code==="紅1"?'<div class="first-tag">FIRST PLAYER</div>':"";
+   if(c){
+     d.innerHTML=first+`<div><div class="seat-avatar">${c.image?`<img src="${c.image}" alt="">`:""}</div><div class="seat-code">${pos.code}</div><div class="seat-char">${c.name}</div></div>`;
+   }else{
+     d.innerHTML=first+`<div><div class="seat-code">${pos.code}</div><div class="seat-char">${isMine?(picked?"放到這裡":"尚未安排"):"對手座次"}</div></div>`;
+     if(isMine&&picked)d.onclick=()=>place(pos.idx);
+   }
+   map.appendChild(d);
+ });
+ $("teamCenterText").textContent=(teamChoice==="red"?"紅隊":"藍隊")+"構築中";
+}
+function place(i){
+ if(!picked||seats[i])return;
+ registerTypoPick(picked);
+ draftHistory.push({
+   round:round,
+   options:currentOffers.map(c=>({id:c.id,name:c.name,image:c.image})),
+   chosen:{id:picked.id,name:picked.name,image:picked.image},
+   seatIndex:i
+ });
+ seats[i]=picked;picked=null;if(round===3){renderSeats();setTimeout(showScore,300)}else{round++;if($("roundNo"))$("roundNo").textContent=round;currentOffers=sampleFive();$("instruction").textContent="先選一位角色。";renderOffers();renderSeats();}}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+const displayScoreAnchors=[[50.770204, 30], [57.909956, 40], [60.285189, 50], [62.585152, 60], [64.926986, 70], [67.368752, 80], [69.842761, 90], [72.773658, 95], [84.410527, 95]];
+function calibrateDisplayScore(raw){
+  const a=displayScoreAnchors;
+  if(raw<=a[0][0]) return a[0][1];
+  for(let i=0;i<a.length-1;i++){
+    const [x0,y0]=a[i], [x1,y1]=a[i+1];
+    if(raw<=x1){
+      if(y0===y1) return y0;
+      const t=(raw-x0)/(x1-x0 || 1);
+      return y0+t*(y1-y0);
+    }
+  }
+  return 95;
+}
+
+function calc(){
+ let types=seats.map(roleType);
+
+ // 1) 角色強度：角色基礎數據 + 去年賽事表現。
+ // 「公認強角」不再直接加最終總分，只在角色強度內做小幅修正。
+ let individual=seats.reduce((s,c)=>{
+   let base=(c.base*.68+c.tour*.32);
+   let mult=strongRoleMult[c.name]||1;
+   let strongAdj=(mult-1)*25; // 1.05≈+1.25、1.10≈+2.5，三人平均後仍是小修正
+   return s+base+strongAdj;
+ },0)/3;
+ individual=clamp(individual,30,100);
+
+ // 2) 實際賽事中的同隊搭配。
+ let pairScores=[];
+ for(let i=0;i<3;i++) for(let j=i+1;j<3;j++){
+   let a=seats[i].name,b=seats[j].name;
+   let key=[a,b].sort().join("|"), d=tournamentPairs[key];
+   if(!d){ pairScores.push(58); continue; }
+   let wr=(d.w+2)/(d.g+4);
+   let confidence=Math.min(1,d.g/7);
+   pairScores.push(58 + (wr-.5)*72*confidence);
+ }
+ let tournamentSynergy=pairScores.reduce((a,b)=>a+b,0)/pairScores.length;
+
+ // 3) 使用者提供的二人 / 三人組合加乘。
+ // 這些資料只影響「組合搭配」，不再另外直接推高最終總分。
+ let manualBonus=0;
+ for(let i=0;i<3;i++) for(let j=i+1;j<3;j++){
+   let key=[seats[i].name,seats[j].name].sort().join("|");
+   let mult=manualPairMult[key];
+   if(mult) manualBonus+=(mult-1)*42;
+ }
+ let tripleKey=seats.map(c=>c.name).sort().join("|");
+ if(manualTripleMult[tripleKey]) manualBonus+=(manualTripleMult[tripleKey]-1)*55;
+
+ // 神聖教廷多人同隊：保留小幅組合加成。
+ let holyCount=seats.filter(c=>holyCourt.has(c.name)).length;
+ if(holyCount>=2) manualBonus+=(holyCount-1)*4;
+
+ let synergy=clamp(tournamentSynergy + manualBonus,30,100);
+
+ // 4) 真正的前後座概念：
+ // 紅隊：紅2 = 前、紅3 = 中、紅1 = 後
+ // 藍隊：藍1 = 前、藍2 = 中、藍3 = 後
+ function actualPosition(index){
+   if(teamChoice==="red"){
+     return index===1 ? "前" : index===0 ? "後" : "中";
+   }else{
+     return index===0 ? "前" : index===2 ? "後" : "中";
+   }
+ }
+
+ let posValues=[];
+ seats.forEach((c,i)=>{
+   let pref=positionPreference[c.name]||"沒差";
+   let actual=actualPosition(i);
+   if(pref==="沒差") posValues.push(72);
+   else if(pref===actual) posValues.push(100);
+   else if(actual==="中") posValues.push(66);
+   else posValues.push(38);
+ });
+ let pos=posValues.reduce((a,b)=>a+b,0)/3;
+
+ // 5) 功能互補。
+ let unique=new Set(types).size;
+ let comp = unique===3 ? 88 : unique===2 ? 68 : 45;
+ if(types.includes("support")) comp+=4;
+ if(types.includes("front")) comp+=3;
+ if(types.includes("ranged")) comp+=3;
+ comp=clamp(comp,40,100);
+
+ // 新核心：組合搭配成為最重要的一項。
+ let total =
+   individual*0.35 +
+   synergy*0.45 +
+   comp*0.10 +
+   pos*0.10;
+
+ // 1.3：三個角色必殺技全部吃寶石，略微扣分。
+ if(seats.every(c=>gemUltimateRoles.has(c.name))) total*=0.95;
+
+ // 1.3：資源供需只作很小的修正。
+ let producers=seats.filter(c=>resourceRole[c.name]==="產資源").length;
+ let consumers=seats.filter(c=>resourceRole[c.name]==="吃資源").length;
+ let resourceDiff=producers-consumers;
+ let resourceMult=resourceDiff>=2?1.02:resourceDiff===1?1.01:resourceDiff===0?1:resourceDiff===-1?0.99:0.98;
+ total*=resourceMult;
+
+ // 頂分門檻：沒有足夠的角色搭配，就不能只靠三個強角衝到頂分。
+ if(synergy<60) total=Math.min(total,79);
+ else if(synergy<70) total=Math.min(total,89);
+ else if(synergy<85) total=Math.min(total,94);
+ else if(synergy<92) total=Math.min(total,97);
+
+ const rawTotal=total;
+ total=Math.round(clamp(calibrateDisplayScore(rawTotal),30,95));
+
+ return{
+  individual:Math.round(individual),
+  synergy:Math.round(synergy),
+  comp:Math.round(comp),
+  pos:Math.round(pos),
+  rawTotal,
+  total
+ };
+}
+
+const fixed99Lineups=[{"team": "blue", "seats": ["神箭手", "血之巫女", "紅衣主教"]}, {"team": "red", "seats": ["血之巫女", "靈魂術士", "天使"]}, {"team": "blue", "seats": ["獸靈武士", "女僕長", "魔槍"]}, {"team": "red", "seats": ["聖殿騎士", "紅衣主教", "聖庭檢察士"]}, {"team": "blue", "seats": ["冒險家", "劍帝", "神秘學者"]}, {"team": "red", "seats": ["賢者", "神官", "血之巫女"]}, {"team": "blue", "seats": ["靈魂術士", "賢者", "陰陽師"]}, {"team": "red", "seats": ["魔劍士", "暗殺者", "冒險家"]}, {"team": "blue", "seats": ["瘟疫法師", "異教徒", "仲裁者"]}, {"team": "red", "seats": ["瘟疫法師", "聖女", "紅蓮騎士"]}];
+function isFixed99Lineup(){
+  return fixed99Lineups.some(x=>x.team===teamChoice && x.seats.every((n,i)=>seats[i] && seats[i].name===n));
+}
+
+// 事件卡彩蛋：三名角色全部要屬於同一事件卡角色池。
+const eventCardPools=[
+  {name:"劍意末路",chars:["封印師","魔劍士","風之劍聖"]},
+  {name:"神子降臨",chars:["結界師","女僕長","紅衣主教","染污者","噬神者","矜貴之女"]},
+  {name:"賢者之書",chars:["蒼炎魔女","勇者","賢者"]},
+  {name:"圓桌統合",chars:["格鬥家","劍帝","神官","血色劍靈"]},
+  {name:"黑衣聖教",chars:["瘟疫法師","聖弓","聖女"]},
+  // 圖片中的「鑄律者」視為紅衣主教。
+  {name:"精靈解放",chars:["狂戰士","紅衣主教","神秘學者","元素師"]},
+  {name:"巫女暴走",chars:["陰陽師","獸靈武士","祈禱師","蝶舞者","血之巫女","靈符師"]},
+  {name:"紅蓮叛亂",chars:["聖殿騎士","星墜女巫","聖庭檢察士","紅蓮騎士","獵巫人","戰鬥法師"]}
+];
+function matchedEventCard(){
+  const names=seats.map(c=>c.name);
+  return eventCardPools.find(pool=>names.every(n=>pool.chars.includes(n)))||null;
+}
+
+function applySpecialScore(s){
+  if(isFixed99Lineup()){
+    s.total=99;
+    s.synergy=Math.max(s.synergy,95);
+    return s;
+  }
+  if(isChampionLineup()){
+    s.total=Math.max(s.total,96);
+    s.synergy=Math.max(s.synergy,95);
+    return s;
+  }
+  if(tortureCombo()){
+    s.synergy=Math.min(100,s.synergy+12);
+    s.total=Math.min(95,s.total+4);
+  }
+  return s;
+}
+
+
+function favoriteBonus(){
+ if(!favoriteName)return 0;
+ const fav=characters.find(c=>c.name===favoriteName); if(!fav)return 0;
+ let bonus=0;
+ if(seats.some(c=>c.name===favoriteName)) bonus+=4;
+ const favType=roleType(fav);
+ seats.forEach(c=>{
+   if(c.name!==favoriteName && roleType(c)===favType) bonus+=1.5;
+   if(c.name!==favoriteName){
+     const key=[favoriteName,c.name].sort().join("|");
+     const mult=manualPairMult[key];
+     if(mult>=1.10) bonus+=2;
+     else if(mult>=1.05) bonus+=1;
+   }
+ });
+ return Math.min(10,Math.max(0,Math.round(bonus)));
+}
+function applyPersonalScore(s){
+ const base=s.total;
+ let theory=base, favBonus=0, luck=0;
+ if(base>=90){
+   favBonus=favoriteBonus();
+   luck=nameLuck;
+   theory=base+favBonus+luck;
+ }
+ const privileged=isFixed99Lineup()||isChampionLineup();
+ let finalScore=Math.round(theory);
+ let hitWall=false;
+ if(privileged){
+   finalScore=Math.min(99,Math.max(0,finalScore));
+   if(isFixed99Lineup()) finalScore=99;
+ }else{
+   if(finalScore>98){finalScore=98;hitWall=true;}
+   finalScore=Math.max(0,finalScore);
+ }
+ s.baseBeforePersonal=base;s.favoriteBonus=favBonus;s.nameLuck=luck;s.theoretical=theory;s.hitHistoryWall=hitWall;s.total=finalScore;
+ return s;
+}
+function playerResultTitle(){
+ const hasFav=seats.some(c=>c.name===favoriteName);
+ if(hasFav)return `${playerName}，你為本命「${favoriteName}」選出的陣容評分是：`;
+ if(favoriteSeen)return `${playerName}，你負心背棄本命「${favoriteName}」所選出的陣容評分是：`;
+ return `${playerName}，你的陣容評分是：`;
+}
+
+// 組合加乘 1.3／最新評分版 第三頁：特殊陣容與評語
+const championLineups=[{"contest": "第一屆十週年北部", "team": "blue", "seats": ["魔弓", "月之女神", "聖槍騎士"]}, {"contest": "第一屆十週年南部", "team": "red", "seats": ["蒼炎魔女", "陰陽師", "劍帝"]}, {"contest": "第二屆十一週年北部", "team": "blue", "seats": ["聖庭檢察士", "月之女神", "蒼炎魔女"]}, {"contest": "第二屆十一週年南部", "team": "blue", "seats": ["魔槍", "聖槍騎士", "神箭手"]}, {"contest": "第三屆十二週年北部", "team": "red", "seats": ["元素師", "劍帝", "神箭手"]}, {"contest": "第三屆十二週年中部", "team": "blue", "seats": ["魔槍", "風之劍聖", "天使"]}, {"contest": "第三屆十二週年南部", "team": "blue", "seats": ["魔弓", "魔槍", "英靈人形"]}, {"contest": "第四屆十三週年年中北部", "team": "blue", "seats": ["月之女神", "異教徒", "紅蓮騎士"]}, {"contest": "第四屆十三週年年中南部", "team": "red", "seats": ["異教徒", "魔劍士", "陰陽師"]}, {"contest": "第五屆十三週年年末北部", "team": "red", "seats": ["聖槍騎士", "月之女神", "聖弓"]}, {"contest": "第五屆十三週年年末南部", "team": "blue", "seats": ["瘟疫法師", "聖女", "月之女神"]}, {"contest": "2026大陸線上賽", "team": "blue", "seats": ["狂戰士", "魔弓", "祈禱師"]}];
+const sureChars=new Set(["記錄者", "聖弓", "獵巫人", "吟游詩人"]);
+const tortureSets=[{"label": "棄牌流", "chars": ["獸靈武士", "女僕長", "獵巫人", "魔槍"]}, {"label": "減上限", "chars": ["血之巫女", "紅衣主教", "神箭手"]}, {"label": "自爆流", "chars": ["異教徒", "瘟疫法師", "仲裁者"]}, {"label": "反彈流", "chars": ["神官", "血之巫女", "賢者"]}];
+const newbieChars=new Set(["風之劍聖", "狂戰士", "神箭手", "封印師", "暗殺者", "聖女", "天使", "魔法少女", "戰鬥法師", "矜貴之女"]);
+const gambleChars=new Set(["記錄者", "矜貴之女", "賢者"]);
+const highComments=["滿分陣容湊不難，駕駛不強也枉然。", "這麼好的陣容還贏不了，不是隊友的問題，那還可能是誰的問題...?", "陣容已經幫你選好了，剩下的總不能也要系統幫你打吧？", "看起來沒有什麼藉口可以輸了。", "這陣容很強，至於使用者是不是一樣強……就不好說了。", "紙面實力接近完美，現在壓力全都來到駕駛身上了。", "系統能做的都做了，接下來請證明你配得上這個陣容。", "如果這樣都能輸，建議不要怪選角。", "恭喜，你成功把陣容問題解決了。現在只剩操作問題。"];
+const normalComments=["似乎是可行的陣容，還待實戰來驗證。", "要記住，沒有最強的陣容，只有最強的駕駛...", "看起來能打，至於能不能贏就是另一回事了。", "沒有特別亮眼，但也找不到立即投降的理由。", "中規中矩，接下來就看三位駕駛怎麼發揮了。", "系統表示：可以玩，但不保證售後。", "有點想法，但這個想法能不能活過第一輪還不知道。", "理論上沒有問題，實戰通常就是從這句話開始出問題。", "至少從選角畫面來看，還看不出誰該背鍋。"];
+const lowComments=["你努力湊出了陣容，卻遭到系統無情給分。", "這是你心中的完美陣容？我想你自己都懷疑吧！", "系統反覆計算了三次，很遺憾，分數沒有算錯。", "三個角色都沒有問題，問題可能出在把他們放在一起的人。", "這不是陣容構築，這比較像隨機事件。", "好消息是比賽還沒開始，現在後悔還來得及。", "對手看到這個陣容，可能已經開始思考下一場了。", "每個角色單獨看都挺正常，怎麼湊在一起就變成這樣了？", "系統很想給你鼓勵分，但這裡是星杯傳說。", "87分，不能再高了"];
+
+function isChampionLineup(){
+ return championLineups.some(x=>x.team===teamChoice && x.seats.every((n,i)=>seats[i] && seats[i].name===n));
+}
+function hasSureCombo(){
+ return seats.filter(c=>c && sureChars.has(c.name)).length>=3;
+}
+function tortureCombo(){
+ const names=new Set(seats.map(c=>c.name));
+ for(const g of tortureSets){
+   const count=g.chars.filter(n=>names.has(n)).length;
+   const need=g.chars.length===4 ? 3 : g.chars.length;
+   if(count>=need) return g.label;
+ }
+ return null;
+}
+function hasNewbieCombo(){
+ return seats.filter(c=>newbieChars.has(c.name)).length>=3;
+}
+function hasGambleCombo(){
+ return seats.every(c=>gambleChars.has(c.name));
+}
+const insultCombo=new Set(["聖女","天使","獵巫人"]);
+const synthesisChars=new Set(["風之劍聖","冒險家","祈禱師","靈符師","魔槍","獵巫人","傳教士","聖弓"]);
+const jojoCombo=["魔法少女","陰陽師","結界師"];
+const beastEarCombo=new Set(["封印師","獸靈武士","結界師"]);
+
+function hasInsultCombo(){ return seats.every(c=>insultCombo.has(c.name)); }
+function hasSynthesisCombo(){ return seats.filter(c=>synthesisChars.has(c.name)).length>=3; }
+function hasJojoCombo(){ return seats.every((c,i)=>c.name===jojoCombo[i]); }
+function hasBeastEarCombo(){ return seats.every(c=>beastEarCombo.has(c.name)); }
+function hasContractCombo(){
+ const names=seats.map(c=>c.name);
+ if(teamChoice==="blue") return names[0]==="傳教士"&&names[1]==="魔法少女" || names[0]==="魔法少女"&&names[1]==="傳教士";
+ return names[2]==="傳教士"&&names[0]==="魔法少女" || names[2]==="魔法少女"&&names[0]==="傳教士";
+}
+
+function exactSeats(team,names){return teamChoice===team&&names.every((n,i)=>seats[i]&&seats[i].name===n);}
+function hasTruthCombo(){return exactSeats("blue",["聖庭檢察士","神秘學者","記錄者"]);}
+function hasDeadCombo(){return exactSeats("red",["祈禱師","勇者","結界師"]);}
+function hasPlanCombo(){return exactSeats("blue",["異教徒","獵巫人","元素師"]);}
+function hasBugFeatureCombo(){
+ const pairs=[["矜貴之女","聖女"],["聖殿騎士","紅蓮騎士"]];
+ const idx = teamChoice==="red" ? [2,0] : [0,1]; // 紅3+紅1；藍1+藍2
+ const a=seats[idx[0]]?.name, b=seats[idx[1]]?.name;
+ return pairs.some(([x,y]) => (a===x&&b===y)||(a===y&&b===x));
+}
+function hasCoachCombo(){const s=new Set(seats.map(c=>c.name));return ["封印師","血之巫女","勇者"].every(x=>s.has(x));}
+function hasMyTurnCombo(){const s=new Set(seats.map(c=>c.name));return ["傳教士","月之女神","風之劍聖"].every(x=>s.has(x));}
+function hasShockedCombo(){const pool=new Set(["瘟疫法師","風之劍聖","染污者","聖弓","靈符師"]);return seats.filter(c=>pool.has(c.name)).length===3;}
+
+function randomOf(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+const missionaryComments=[
+"信仰有沒有得到回應不知道，系統倒是回應你了。","這套陣容看起來很虔誠，至少表面上是。",
+"傳教士表示：這局應該還有救。","你的選角似乎正在進行某種傳教活動。",
+"神是否站在你這邊尚未證實，但分數先站了。","這個陣容需要的可能不是操作，而是祈禱。",
+"看來你對傳教士的信仰比對隊友還堅定。","系統已收到你的禱告，至於批准與否請看分數。",
+"帶著傳教士上場，至少輸了還能尋求心靈慰藉。","這次的教義是：先選再說。",
+"傳教士正在努力說服系統多給你幾分。","信仰值很高，勝率請另行查詢。",
+"這陣容多少帶點神學成分。","願星杯保佑你的下一步操作。",
+"如果這局輸了，大概不是祈禱次數不夠。","你的本命正在注視著這個分數。",
+"傳教工作很成功，至於比賽工作就看你了。","系統沒有宗教立場，但它有評分。",
+"看來你不是來構築陣容，是來傳播信仰的。","至少這一次，信仰沒有完全辜負你。"
+];
+const hereticComments=[
+"異教徒表示：規則只是參考。","這個陣容多少有點離經叛道。",
+"系統試圖理解你的信仰，然後選擇直接給分。","不走尋常路，至少你確實做到了。",
+"正統打法看了可能會沉默。","你的陣容正在挑戰教科書的底線。",
+"異教徒很滿意，其他人就不一定了。","這個選法很自由，自由到系統有點害怕。",
+"誰說一定要照正常方式玩星杯？","這大概就是所謂的異端構築。",
+"系統沒有審判你，只是默默記下了分數。","你的選角正在遠離主流航道。",
+"異教徒：我早就說過可以這樣玩。","如果贏了叫創新，輸了叫異端。",
+"這套陣容很有自己的想法。","主流玩家看到可能需要一點時間消化。",
+"你似乎把攻略看完之後決定反著做。","異教的道路不好走，但至少很有個性。",
+"這個分數不代表教會認可你的選擇。","系統尊重你的選擇，但不保證理解。"
+];
+
+const page4Pools={"懷疑人生": ["你確定要這樣玩？", "你要不要再想一下？", "這個選擇很勇敢。", "系統無法理解你的意圖。", "這已經超出系統的理解範圍。", "等等，你是認真的？", "有沒有一種可能，你選錯了？"], "低分": ["我就爛。",  "沒事，至少你有參加。", "重在參與。", "好消息：還沒開打。", "壞消息：這是你的陣容。", "這分數，不能只有我看到。", "系統已經盡力幫你找優點了。", "系統沉默了三秒。", "這個分數很有進步空間。", "至少不能再低多少了……吧？", "輸贏不重要，開心就好。大概吧。", "不要問，問就是相信隊友。", "選都選了，不然還能怎樣？", "你是不是按太快了？", "這把建議從心態開始調整。"], "嘲諷": ["三個角色都沒問題，那問題出在哪裡呢？", "角色是無辜的。", "這鍋角色不背。", "不要怪系統，角色是你自己選的。", "本系統僅負責評分，不負責心理輔導。", "建議截圖留念，畢竟不常見。", "很有想法，下次不要了。", "尊重、祝福。", "只能說未來可期。", "你一定有自己的理由。", "看得出來你有一套自己的理解。", "你的遊戲理解領先版本太多了。", "這不是失誤，這是戰術。", "高手的世界我們不懂。"], "高分": ["你是懂選角的。", "有料。", "這把有了。", "這把穩了……吧？", "可以，這很星杯。", "懂的都懂。", "這個真的有東西。", "版本答案被你找到了？", "教練，我想學這個。", "閣下對星杯的理解，恐怕不在我之下。", "這陣容有冠軍相。", "別奶，先打完再說。"], "高分反諷": ["陣容都幫到這裡了，剩下看你了。", "這都能輸的話……嗯。", "現在壓力來到駕駛這邊。", "陣容沒有問題，請開始找其他原因。", "系統能幫你的就到這裡了。", "滿分陣容湊不難，駕駛不強也枉然。"], "潮語": ["是在哈囉？", "我真的會謝。", "幫QQ。", "笑死。", "有料喔。", "好傢伙。", "破防了。", "太狠了。", "格局打開。", "這波在大氣層。", "6。", "你是真的老六。", "紅溫了。", "栓Q。", "尊嘟假嘟？"], "遊戲梗": ["GG。", "這把高端局。", "這把坐牢。", "這把躺了。", "這把誰C？", "相信隊友。", "別急，能翻。", "優勢在我。", "問題不大。", "這波不虧。", "還能打，別投。", "選角結束，比賽也差不多結束了。", "還沒開打，氣勢先輸一半。", "陣容是死的，人是活的……應該吧。"], "特殊強組": ["這是人能想出來的組合？", "對面看到已經開始頭痛了。", "今天也是帶給對手快樂的一天。", "你的對手有權保持沉默。", "請問對面是哪裡得罪你了？", "你玩遊戲一定要這麼痛苦嗎？我是說對面。", "看來你很喜歡折磨對手。", "友誼第一，比賽第二——你顯然不同意。"], "賭狗": ["你要賭到什麼時候？", "搏一搏，單車變摩托。", "富貴險中求。", "這不是運氣，這是信仰。", "你相信奇蹟嗎？現在最好開始相信。", "贏了天秀，輸了正常。"], "老玩家": ["老東西還是有點理解的。", "這味道，一看就是老玩家。", "有些東西只有老玩家才懂。", "你的牌齡暴露了。", "這套居然還有人記得？", "夢回那一年。"]};
+
+const gamblerChars=["矜貴之女","記錄者","賢者"];
+const oldPlayerChars=["風之劍聖","狂戰士","神箭手","封印師","暗殺者","聖女","天使","魔法少女","魔劍士","聖槍騎士","元素師","冒險家","瘟疫法師","仲裁者","神官","祈禱師","賢者","靈符師","劍帝","格鬥家","勇者","靈魂術士","血之巫女","蝶舞者"];
+function gamblerCount(){return seats.filter(c=>c&&gamblerChars.includes(c.name)).length;}
+function isOldPlayerLineup(){return seats.every(c=>c&&oldPlayerChars.includes(c.name));}
+function conditionalOrdinaryComment(){
+ if(gamblerCount()===2) return randomOf(page4Pools["賭狗"]);
+ if(isOldPlayerLineup()) return randomOf(page4Pools["老玩家"]);
+ return "";
+}
+
+const bondDialogues=[["女僕長", "矜貴之女", "這是我賜予你的名字，以後你就叫這個名字吧。」「謝謝小姐"], ["神秘學者", "元素師", "這是個他愛她，她愛他，他愛她，她愛他的胃疼故事"], ["噬神者", "矜貴之女", "看在你曾經幫我贖身的份上，勉為其難幫你一次"], ["染污者", "噬神者", "跟緊點了，我怕你那瘦弱的小身板，還沒上場就被風給吹跑了"], ["結界師", "紅衣主教", "放心，我布下的結界，還沒有人能夠破解的了"], ["女僕長", "暗殺者", "我已經金盆洗手了，為什麼組織還是不肯放過我"], ["神官", "聖殿騎士", "尊敬的斯卡雷特大人，秩序的維護還得靠你們"], ["風之劍聖", "劍之魔女", "你。。。怎麼就這樣離我而去"], ["風之劍聖", "魔劍士", "你有見到過一個女劍士麼？"], ["狂戰士", "紅衣主教", "辦事不利，你走吧"], ["神箭手", "精靈射手", "我在遠方有一支遠親精靈族，我們去那邊避難吧"], ["封印師", "魔劍士", "看起來你的魔力即將要暴走了，那我幫你一下，在你的鎧甲上打造一個封印法陣吧，這能暫時延緩它的暴走"], ["暗殺者", "女僕長", "你知道我為何而來"], ["矜貴之女", "女僕長", "這是我賜予你的名字，以後你就叫這個名字吧。」「謝謝小姐"], ["聖女", "神官", "水天然的擁有洗滌治癒的能力，你要善加運用"], ["天使", "女武神", "吾之一族的榮光，將再現世間！"], ["魔法少女", "精靈射手", "你這低等的精靈，居然去和羽族同流合污"], ["暴食少女", "魔法少女", "嗯。。。這個好吃，那個也好吃。。。嗚哇，我還要，再來一份！嗝~"], ["戰鬥法師", "星墜女巫", "蕾娜醬~我們來繼續做那天晚上沒做完的事情吧~"], ["魔劍士", "劍之魔女", "我。。。我到底做了什麼？她。。。她是誰？"], ["聖槍騎士", "聖殿騎士", "她的樣子，好美，我也要成為像她那樣的人"], ["元素師", "神箭手", "你們還好麼？受苦的精靈族人們"], ["瘟疫法師", "聖女", "事實的真相，真的是你想像的那樣麼~"], ["女武神", "天使", "你要讓舊日之民再現世間"], ["女武神-零式", "魔槍", "你。。。看起來好眼熟"], ["精靈射手", "元素師", "恩人，感謝您曾經的拯救"], ["獵巫人", "聖庭檢察士", "這些金幣作為你的報酬怎麼樣？夠你在酒館裡喝個痛快了。"], ["神官", "劍帝", "君權神授，不信教的國家是不會被教廷承認的"], ["祈禱師", "靈符師", "道法精妙，術法自然，同樣的道法原理，在我這裡則是這樣。與大師交流，收益頗豐"], ["賢者", "蒼炎魔女", "哇，這次不出意外，第一名又是諾雷傑，第二名又是莉莉絲，他倆幾乎每次都是包攬第一第二名，嘿嘿，磕到了磕到了"], ["靈符師", "陰陽師", "暴走的人啊，符咒之靈讓你沉眠於此地吧"], ["聖殿騎士", "紅蓮騎士", "去守護成為白吧。。。不，我要去殺戮成為黑"], ["紅蓮騎士", "聖槍騎士", "你不會知道我當時為什麼這麼做，不過，如果你能親手抓到我，我可以考慮跟你解釋一下，哈哈哈"], ["魔槍", "魔弓", "你也是被星石所困擾的人麼"], ["ex魔弓", "魔弓", "姐姐，我一定要守護。。。你"], ["魔弓", "神箭手", "姐姐，我一定要守護。。。你"], ["英靈人形", "女武神", "蓄勢迸發，準備啟動"], ["蒼炎魔女", "賢者", "哇，這次不出意外，第一名又是諾雷傑，第二名又是莉莉絲，他倆幾乎每次都是包攬第一第二名，嘿嘿，磕到了磕到了"], ["陰陽師", "靈符師", "暴走的人啊，式神之靈讓你回歸于本源吧"], ["血色劍靈", "劍帝", "那看看到底是誰的劍法厲害"], ["聖庭檢察士", "聖殿騎士", "你好，我是本次行動您的副官克裡斯瑪，將作為您的助手全程伴隨左右"], ["劍帝", "格鬥家", "和則兩利，分則俱傷，閣下若不聽勸，那只能怪我先禮後兵了"], ["格鬥家", "勇者", "呵，不錯嘛，少數幾個能接下我【百式幻龍拳】的人啊"], ["勇者", "染污者", "是。。。你麼？"], ["吟游詩人", "魔法少女", "你好呀，我叫詹姆。」「你好，我叫妮婭，我還是第一次見到人類呢。"], ["獸靈武士", "血之巫女", "不好，她要暴走了！"], ["原初之弓", "聖弓", "聖煌輝光炮，充填100%"], ["聖弓", "天使", "信仰之力，充填"], ["星墜女巫", "戰鬥法師", "路爾莉嘉醬要來了？真是期待呢~"], ["血之巫女", "獸靈武士", "不要管我！"], ["蝶舞者", "祈禱師", "道法精妙，術法自然，同樣的道法原理，在我這裡則是這樣。與大師交流，收益頗豐"], ["月之女神", "天使", "三神歸一，月之輪回。月有盈缺，我的仁慈亦然"], ["遊擊士", "精靈射手", "喏，給你，這是精靈一族的贈禮"], ["劍之魔女", "風之劍聖", "他和當年的那個他，還真的是很像呢"], ["紅衣主教", "教皇", "讚美我的陛下"], ["貪婪少女", "魔法少女", "emmmmm，要是金庫還在就好了~"], ["天使", "搗蛋蘿莉", "我的附庸的附庸不是我的附庸"], ["搗蛋蘿莉", "天使", "兩隻翅膀有什麼了不起？咯咯咯~"], ["異教徒", "傳教士", "真正的神終究會來帶我前往新的世界"], ["傳教士", "異教徒", "神的信仰會遍佈於整個世界"], ["紅衣主教", "教皇", "若能讓世界遍佈神的福音，重用此人又何妨"]];
+
+// 第六頁「連座」：藍方 = 藍1→藍2；紅方 = 紅3→紅1。
+// 測試版：只要符合羈絆就 100% 顯示，正式版之後再改成低機率。
+function bondDialogueForCurrentLineup(){
+  const ordered = teamChoice==="red" ? [seats[2]?.name,seats[0]?.name] : [seats[0]?.name,seats[1]?.name];
+  if(!ordered[0]||!ordered[1]) return "";
+  const matches=bondDialogues.filter(([a,b,q])=>a===ordered[0]&&b===ordered[1]&&q);
+  if(!matches.length) return "";
+  return "「"+matches[Math.floor(Math.random()*matches.length)][2]+"」";
+}
+
+function page4OrdinaryComment(score){
+  let pool=[];
+  if(score<50) pool=[...page4Pools["懷疑人生"],...page4Pools["低分"],...page4Pools["嘲諷"],...page4Pools["潮語"],...page4Pools["遊戲梗"]];
+  else if(score<85) pool=[...page4Pools["潮語"],...page4Pools["遊戲梗"],...page4Pools["嘲諷"]];
+  else pool=[...page4Pools["高分"],...page4Pools["高分反諷"],...page4Pools["潮語"],...page4Pools["遊戲梗"]];
+
+  if(typeof tortureCombo==="function" && tortureCombo()) pool=pool.concat(page4Pools["特殊強組"]);
+  if(typeof hasGambleCombo==="function" && hasGambleCombo()) pool=pool.concat(page4Pools["賭狗"]);
+  return pool.length ? pool[Math.floor(Math.random()*pool.length)] : "";
+}
+
+function ordinaryComment(score){
+ let pool=score>=85?highComments:score>=50?normalComments:lowComments;
+ if(favoriteName==="傳教士"||seats.some(c=>c.name==="傳教士")) pool=pool.concat(missionaryComments);
+ if(favoriteName==="異教徒"||seats.some(c=>c.name==="異教徒")) pool=pool.concat(hereticComments);
+ return randomOf(pool);
+}
+function page4AddonComment(score){
+ if(Math.random()>=0.20) return "";
+ return page4OrdinaryComment(score);
+}
+
+
+function hasHappyGemReverse(){
+ if(!seats.every(c=>gemUltimateRoles.has(c.name)))return false;
+ // 中間座位不判定；只要求真正的前、後位置適性完全反放。
+ if(teamChoice==="red"){
+   // 紅1 = 後位，要放前適性；紅2 = 前位，要放後適性。紅3中間不算。
+   return positionPreference[seats[0].name]==="前" && positionPreference[seats[1].name]==="後";
+ }
+ // 藍1 = 前位，要放後適性；藍3 = 後位，要放前適性。藍2中間不算。
+ return positionPreference[seats[0].name]==="後" && positionPreference[seats[2].name]==="前";
+}
+
+function commentForScore(score){
+ if(typoRouteStage===4) return "竟然都選錯字角色，是該好好紀錄一下。";
+ if(isFixed99Lineup()) return "恭喜，現在你沒有藉口了。";
+ if(isChampionLineup()) return "這麼完美的陣容組合，想必能在星杯賽場上拿冠軍吧...";
+ if(hasTruthCombo()) return "真相只有一個！問題是你選的答案有三個。";
+ if(hasDeadCombo()) return "你已經死了。……對面還不知道而已。";
+ if(hasPlanCombo()) return "計画通り。";
+ if(hasBugFeatureCombo()) return "這不是 BUG，這是 Feature。";
+
+ // 事件卡彩蛋：符合資格後只有 40% 機率出現。
+ const eventMatch=matchedEventCard();
+ if(eventMatch && Math.random()<0.40) return `這個組合......是「${eventMatch.name}」嗎？...`;
+
+ if(tortureCombo()) return "看來你很喜歡折磨對手";
+ if(hasJojoCombo()) return "看來你比老闆JOJOW還惡趣味";
+ if(hasInsultCombo()) return "傷害性不高，侮辱性極強。";
+ if(hasCoachCombo()) return "教練，我想打星杯。";
+ if(hasMyTurnCombo()) return "還沒結束！我的回合！";
+ if(hasSynthesisCombo()) return "第五屆星杯合成戰爭開始";
+ if(hasContractCombo()) return "和我簽下契約，成為魔法少女吧";
+ if(hasSureCombo()) return "Are you sure about that?";
+ if(hasGambleCombo()) return "你覺得你是賭神嗎？";
+ if(hasShockedCombo()) return "我看不懂，但我大受震撼。";
+ if(hasHappyGemReverse()) return "你開心就好。";
+ if(hasNewbieCombo()) return "看來是新手玩家只會玩3星";
+ return ordinaryComment(score);
+}
+
+function specialCommentTier(text){
+ const gold=[
+ "竟然都選錯字角色，是該好好紀錄一下。","恭喜，現在你沒有藉口了。",
+ "這麼完美的陣容組合，想必能在星杯賽場上拿冠軍吧...","看來你比老闆JOJOW還惡趣味",
+ "真相只有一個！問題是你選的答案有三個。","你已經死了。……對面還不知道而已。","計画通り。"];
+ const silver=["這不是 BUG，這是 Feature。","和我簽下契約，成為魔法少女吧","傷害性不高，侮辱性極強。","Are you sure about that?","你覺得你是賭神嗎？","教練，我想打星杯。","還沒結束！我的回合！"];
+ const bronze=["你開心就好。","看來你很喜歡折磨對手","看來是新手玩家只會玩3星","第五屆星杯合成戰爭開始","我看不懂，但我大受震撼。"];
+ if(gold.includes(text))return"gold";if(silver.includes(text))return"silver";
+ if(bronze.includes(text)||text.startsWith("這個組合......是「"))return"bronze";return null;
+}
+function applyFeedbackTier(text){
+ const e=$("feedback");e.classList.remove("tier-gold","tier-silver","tier-bronze");
+ const t=specialCommentTier(text);if(t)e.classList.add("tier-"+t);return t;
+}
+
+let lastResult=null;
+function showScore(){
+ let s=applyPersonalScore(applySpecialScore(calc()));$("gamePanel").classList.add("hidden");$("resultPanel").classList.remove("hidden");
+ $("finalTeam").innerHTML=seats.map((c,i)=>`<div class="final-card ${teamChoice==="red"?"team-red":"team-blue"}"><div class="team-seat-label">${teamChoice==="red"?"紅":"藍"}${i+1}</div>${c.image?`<img src="${c.image}">`:""}<b style="display:block;margin-top:7px">${c.name}</b></div>`).join("");
+ $("playerScoreTitle").textContent=playerResultTitle();$("scoreNum").textContent=s.total;$("scoreRing").style.setProperty("--pct",s.total+"%");
+ let g,f;
+ if(isChampionLineup()){g="SS　冠軍陣容";f="這套陣容曾在星杯賽場上證明過自己。"}
+ else if(s.total>=96){g="SS　傳說級陣容";f="這套陣容已經進入極少數的頂端區間。"}
+ else if(s.total>=90){g="S+　近乎完美";f="整體強度與搭配都非常突出，屬於極高品質的選角結果。"}
+ else if(s.total>=80){g="S　頂級陣容";f="角色強度與搭配明顯高於平均。"}
+ else if(s.total>=70){g="A　優秀陣容";f="這是一套完成度很高的組合。"}
+ else if(s.total>=60){g="B　穩定陣容";f="整體可以穩定運作，接近主要分數分布中心。"}
+ else if(s.total>=50){g="C　普通陣容";f="有可用的角色，但仍有明顯改善空間。"}
+ else{g="D　高風險陣容";f="這套組合的整體評價偏弱，需要更精準的搭配。"}
+ const specialComment=commentForScore(s.total);
+ const conditionalComment=specialComment?"":conditionalOrdinaryComment();
+ let finalComment=specialComment||conditionalComment||f;
+ if(s.hitHistoryWall) finalComment+=`\n很抱歉，你撞上了歷史之壁且難以跨越。`;
+ const addon=page4AddonComment(s.total);
+ if(addon) finalComment+=`\n${addon}`;
+ $("grade").textContent=g;$("feedback").style.whiteSpace="pre-line";$("feedback").textContent=finalComment;
+ const bond=bondDialogueForCurrentLineup();
+ $("bondDialogue").textContent=bond;
+ const testFlags=[];
+ if(conditionalComment) testFlags.push(gamblerCount()===2?"TEST：賭狗條件":"TEST：老玩家條件");
+ if(addon) testFlags.push("TEST：第四頁20%追加");
+ if(bond) testFlags.push("TEST：第六頁羈絆");
+ $("ruleTestNote").textContent=testFlags.join(" ｜ ");
+ const tier=applyFeedbackTier(specialComment||"");
+ lastResult={score:s.total,grade:g,comment:finalComment,tier,playerName,favoriteName};
+ $("breakdown").innerHTML=[["角色強度",s.individual],["組合搭配",s.synergy],["陣容互補",s.comp],["座次適性",s.pos]].map(([n,v])=>`<div class="row"><b>${n}</b><div class="bar"><div class="fill" style="width:${v}%"></div></div><span>${v}</span></div>`).join("");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function reset(){round=1;seats=[null,null,null];picked=null;used=new Set();teamChoice=null;draftHistory=[];draftHistory=[];$("teamSetup").classList.remove("hidden");$("draftArea").classList.add("hidden");$("gamePanel").classList.remove("hidden");$("resultPanel").classList.add("hidden");}
+
+function roundRect(ctx,x,y,w,h,r,fill,stroke,lineWidth=1){
+  const rr=Math.min(r,w/2,h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+rr,y);
+  ctx.arcTo(x+w,y,x+w,y+h,rr);
+  ctx.arcTo(x+w,y+h,x,y+h,rr);
+  ctx.arcTo(x,y+h,x,y,rr);
+  ctx.arcTo(x,y,x+w,y,rr);
+  ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.lineWidth=lineWidth;ctx.strokeStyle=stroke;ctx.stroke();}
+}
+function drawCenteredText(ctx,text,x,y,font,color){
+  ctx.font=font;ctx.fillStyle=color;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,x,y);
+}
+function fitText(ctx,text,maxWidth,startSize,minSize=14,weight=800){
+  let size=startSize;
+  while(size>minSize){
+    ctx.font=`${weight} ${size}px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif`;
+    if(ctx.measureText(text).width<=maxWidth)break;
+    size--;
+  }
+  return `${weight} ${size}px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif`;
+}
+function wrapText(ctx,text,maxWidth){
+  const chars=[...text], lines=[]; let line="";
+  for(const ch of chars){
+    const test=line+ch;
+    if(line && ctx.measureText(test).width>maxWidth){lines.push(line);line=ch;} else line=test;
+  }
+  if(line)lines.push(line);
+  return lines;
+}
+
+
+function imageProxyURL(url){ return url; }
+
+function loadCanvasSafeImage(url){
+  return new Promise(resolve=>{
+    if(!url){resolve(null);return;}
+
+    const tryLoad=(src,allowFallback)=>{
+      const img=new Image();
+      if(/^https?:/i.test(src)) img.crossOrigin="anonymous";
+      img.onload=()=>{
+        // Test in a temporary canvas first. If this canvas becomes tainted,
+        // do not contaminate the final result canvas.
+        try{
+          const t=document.createElement("canvas");
+          t.width=4;t.height=4;
+          const tc=t.getContext("2d");
+          tc.drawImage(img,0,0,4,4);
+          t.toDataURL("image/png");
+          resolve(img);
+        }catch(err){
+          if(allowFallback) tryLoad(imageProxyURL(url),false);
+          else resolve(null);
+        }
+      };
+      img.onerror=()=>{
+        if(allowFallback) tryLoad(imageProxyURL(url),false);
+        else resolve(null);
+      };
+      img.src=src;
+    };
+
+    tryLoad(url,true);
+  });
+}
+
+function drawCircularImage(ctx,img,cx,cy,r){
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.clip();
+
+  const sw=img.naturalWidth||img.width;
+  const sh=img.naturalHeight||img.height;
+  const scale=Math.max((r*2)/sw,(r*2)/sh);
+  const dw=sw*scale, dh=sh*scale;
+  ctx.drawImage(img,cx-dw/2,cy-dh/2,dw,dh);
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.lineWidth=3;
+  ctx.strokeStyle="#687aa7";
+  ctx.stroke();
+}
+
+async function saveResultJPG(){
+  if(!lastResult || !seats || seats.some(x=>!x)){
+    alert("尚未完成本局評分。");
+    return;
+  }
+
+  const btn=$("downloadShareBtn");
+  btn.disabled=true;
+  btn.textContent="加載中…";
+
+  try{
+    // Preload only the three final avatars. Each image is checked before it is
+    // allowed into the final canvas so JPG export remains safe.
+    const safeAvatars=await Promise.all(seats.map(c=>loadCanvasSafeImage(c.image)));
+
+    const W=1200, H=1050;
+    const canvas=document.createElement("canvas");
+    canvas.width=W; canvas.height=H;
+    const ctx=canvas.getContext("2d");
+
+    // JPG cannot be transparent, use the same dark background as the page.
+    const bg=ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,"#132348");
+    bg.addColorStop(.28,"#0d1731");
+    bg.addColorStop(1,"#07101f");
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // Header
+    drawCenteredText(ctx,"ASTERIATED GRAIL Powered by Xepher & JOJOW",W/2,52,'900 17px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',"#e7bd63");
+    drawCenteredText(ctx,"星杯傳說｜陣容構築挑戰",W/2,105,'1000 43px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#f7f8ff");
+    drawCenteredText(ctx,"在星杯大賽中贏得勝利吧！",W/2,151,'500 18px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#9da9ca");
+
+    // Main panel
+    roundRect(ctx,70,190,1060,790,24,"#111b36","#304163",2);
+    drawCenteredText(ctx,"陣容評分完成",W/2,232,'1000 26px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#f7f8ff");
+
+    // Final lineup cards
+    const labels=teamChoice==="red"?["紅1","紅2","紅3"]:["藍1","藍2","藍3"];
+    const cardW=235, cardH=150, gap=22;
+    const startX=(W-(cardW*3+gap*2))/2;
+    seats.forEach((c,i)=>{
+      const x=startX+i*(cardW+gap), y=275;
+      const cardFill=teamChoice==="red"?"#551a28":"#14345f";
+      const cardStroke=teamChoice==="red"?"#b64b5b":"#3e73b6";
+      roundRect(ctx,x,y,cardW,cardH,18,cardFill,cardStroke,1.8);
+      drawCenteredText(ctx,labels[i],x+cardW/2,y+22,'1000 20px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#f0c75b");
+
+      // Draw the actual avatar when it can be exported safely.
+      const avatar=safeAvatars[i];
+      if(avatar){
+        drawCircularImage(ctx,avatar,x+cardW/2,y+68,34);
+        ctx.beginPath();ctx.arc(x+cardW/2,y+68,35.5,0,Math.PI*2);
+        ctx.lineWidth=2.5;ctx.strokeStyle=teamChoice==="red"?"#d46a75":"#5b8fce";ctx.stroke();
+      }else{
+        ctx.beginPath(); ctx.arc(x+cardW/2,y+68,34,0,Math.PI*2);
+        ctx.fillStyle="#26385f"; ctx.fill();
+        ctx.lineWidth=3; ctx.strokeStyle="#687aa7"; ctx.stroke();
+        drawCenteredText(ctx,c.name.slice(0,1),x+cardW/2,y+68,'900 29px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#ffe0a0");
+      }
+
+      drawCenteredText(ctx,c.name,x+cardW/2,y+119,fitText(ctx,c.name,cardW-24,20,13,900),"#f7f8ff");
+    });
+
+    // Score ring
+    const cx=W/2, cy=555, r=90;
+    ctx.lineWidth=14; ctx.strokeStyle="#263553";
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+
+    ctx.strokeStyle="#e7bd63";
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*(lastResult.score/100));
+    ctx.stroke();
+
+    // Center the whole "95/100" group inside the ring instead of
+    // centering only the large score and appending /100 to the right.
+    const scoreText=String(lastResult.score);
+    const suffixText="/100";
+    const scoreFont='1000 58px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    const suffixFont='700 20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+
+    ctx.textBaseline="middle";
+    ctx.textAlign="left";
+
+    ctx.font=scoreFont;
+    const scoreW=ctx.measureText(scoreText).width;
+    ctx.font=suffixFont;
+    const suffixW=ctx.measureText(suffixText).width;
+
+    const textGap=5;
+    const totalTextW=scoreW+textGap+suffixW;
+    const scoreStartX=cx-totalTextW/2;
+
+    ctx.font=scoreFont;
+    ctx.fillStyle="#ffe0a0";
+    ctx.fillText(scoreText,scoreStartX,cy-3);
+
+    ctx.font=suffixFont;
+    ctx.fillStyle="#9da9ca";
+    ctx.fillText(suffixText,scoreStartX+scoreW+textGap,cy+8);
+
+    drawCenteredText(ctx,lastResult.grade,cx,685,'1000 31px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif',"#f7f8ff");
+
+    ctx.font='500 19px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif';
+    const commentLines=wrapText(ctx,lastResult.comment,720).slice(0,3);
+    ctx.fillStyle="#c7d0ea";ctx.textAlign="center";ctx.textBaseline="middle";
+    commentLines.forEach((line,i)=>ctx.fillText(line,cx,730+i*28));
+    const bondText=bondDialogueForCurrentLineup();
+    if(bondText){
+      ctx.font='500 13px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif';
+      ctx.fillStyle="#8795b8";
+      const bondLines=wrapText(ctx,bondText,760).slice(0,2);
+      bondLines.forEach((line,i)=>ctx.fillText(line,cx,790+i*19));
+    }
+
+    // Breakdown bars
+    const calcData=applySpecialScore(calc());
+
+    const rows=[
+      ["角色強度",calcData.individual],
+      ["組合搭配",calcData.synergy],
+      ["陣容互補",calcData.comp],
+      ["座次適性",calcData.pos]
+    ];
+    const barX=390, barW=430, barY=820;
+    rows.forEach((row,i)=>{
+      const y=barY+i*46;
+      ctx.font='800 18px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif';
+      ctx.fillStyle="#f7f8ff";ctx.textAlign="right";ctx.textBaseline="middle";
+      ctx.fillText(row[0],350,y);
+      roundRect(ctx,barX,y-7,barW,14,7,"#253552",null);
+      const grad=ctx.createLinearGradient(barX,0,barX+barW,0);
+      grad.addColorStop(0,"#aebbd5");grad.addColorStop(1,"#e7bd63");
+      roundRect(ctx,barX,y-7,barW*Math.max(0,Math.min(100,row[1]))/100,14,7,grad,null);
+      ctx.textAlign="left";ctx.fillStyle="#f7f8ff";ctx.fillText(String(row[1]),barX+barW+18,y);
+    });
+
+    drawCenteredText(ctx,"ASTERIATED GRAIL · LINEUP CHALLENGE · v24",W/2,1015,'700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif',"#7380a3");
+
+    // Save as JPG.
+    const side=teamChoice==="red"?"紅方":"藍方";
+    const filename=`Asteriated_Grail_陣容構築_${side}_${lastResult.score}分.jpg`;
+    const url=canvas.toDataURL("image/jpeg",0.94);
+    const a=document.createElement("a");
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();a.remove();
+  }catch(err){
+    console.error(err);
+    alert("儲存圖片失敗："+(err&&err.message?err.message:"未知錯誤"));
+  }finally{
+    btn.disabled=false;
+    btn.textContent="儲存圖片";
+  }
+}
+
+function startTeam(team){
+ teamChoice=team;round=1;seats=[null,null,null];picked=null;used=new Set();draftHistory=[];currentOffers=sampleFive();
+ if($("roundNo"))$("roundNo").textContent=1;$("instruction").textContent="先選一位角色。";
+ $("draftArea").classList.remove("hidden");renderOffers();renderSeats();
+}
+function randomStart(){
+ round=1;seats=[null,null,null];picked=null;used=new Set();teamChoice=null;
+ beginTypoRoute();
+ $("gamePanel").classList.remove("hidden");$("resultPanel").classList.add("hidden");
+ $("teamSetup").classList.remove("hidden");$("draftArea").classList.add("hidden");
+ const team=Math.random()<0.5?"red":"blue";
+ const label=team==="red"?"紅方":"藍方";
+ const el=$("randomTeamResult");
+ el.textContent="抽選中…";
+ el.style.color="var(--gold2)";
+ setTimeout(()=>{
+   el.textContent=`本次選擇為${label}`;
+   el.style.color=team==="red"?"#ff8799":"#7db7ff";
+   setTimeout(()=>{
+     $("teamSetup").classList.add("hidden");
+     startTeam(team);
+   },1100);
+ },650);
+}
+$("downloadShareBtn").onclick=saveResultJPG;
+$("restartBtn").onclick=resetProfile;
+$("againBtn").onclick=randomStart;
+$("newProfileBtn").onclick=resetProfile;
+$("profileStartBtn").onclick=startProfileGame;
+renderFavoriteGrid();
+</script>
+</body></html>
